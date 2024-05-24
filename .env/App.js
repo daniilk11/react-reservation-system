@@ -6,7 +6,6 @@ import ClubRoom from './ClubRoom';
 import Grill from './Grill';
 import LoginInfo from './LoginInfo';
 
-//    10.0.56.9  10.0.52.41
 function RedirectToExternal({ url }) {
     useEffect(() => {
         window.location.href = url;
@@ -50,7 +49,7 @@ function App() {
                 <Route path='/grill' element={<Grill isLoggedIn={isLoggedIn} />} />
                 <Route
                     path='/login'
-                    element={<RedirectToExternal url="https://rezervace.buk.cvut.cz:8000/auth_is/login" />}
+                    element={<RedirectToExternal url="https://10.0.52.106:8000/auth_is/login" />}
                 />
                 <Route path='/' element={<ClubRoom isLoggedIn={isLoggedIn} />} />
             </Routes>

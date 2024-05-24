@@ -4,7 +4,7 @@ import ReservationForm from './ReservationForm';
 import LoginInfo from "./LoginInfo";
 
 const Grill = ({isLoggedIn}) => {
-    const clubRoomCalendarLink = "https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Europe%2FPrague&bgcolor=%23EF6C00&title=Club%20Room&showCalendars=0&showTz=0&showPrint=0&hl=en&src=Y182Y2FiMzM5NmYzZTBkNDAwZDA3OTA0YjA4ZjQyN2ZmOWM2NmI5MGI4MDk0ODhjZmU2NDAxYTg3ODkxYWIxY2ZkQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&color=%23D81B60"
+    const grillRoomCalendarLink = "https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Europe%2FPrague&bgcolor=%23EF6C00&title=Grill&showCalendars=0&showTz=0&showPrint=0&hl=en&src=Y182Y2FiMzM5NmYzZTBkNDAwZDA3OTA0YjA4ZjQyN2ZmOWM2NmI5MGI4MDk0ODhjZmU2NDAxYTg3ODkxYWIxY2ZkQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&color=%23D81B60"
 
 
     const formFields = [
@@ -72,7 +72,7 @@ const Grill = ({isLoggedIn}) => {
 
     return (
         <div>
-            <GoogleCalendar src={clubRoomCalendarLink}/>
+            <GoogleCalendar src={grillRoomCalendarLink}/>
             {isLoggedIn ? ( // if the user is logged in, render the ReservationForm
                 <ReservationForm formFields={formFields}/>
             ) : ( // if the user is not logged in, render the LoginInfo

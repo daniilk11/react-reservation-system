@@ -6,7 +6,7 @@ import ClubRoom from './ClubRoom';
 import Grill from './Grill';
 import LoginInfo from './LoginInfo';
 
-//    10.0.56.9  10.0.52.41
+
 function RedirectToExternal({ url }) {
     useEffect(() => {
         window.location.href = url;
@@ -45,8 +45,8 @@ function App() {
         <Router>
             <Header isLoggedIn={isLoggedIn} onLogout={handleLogout} />
             <Routes>
-                <Route path='/study-room' element={<StudyRoom isLoggedIn={isLoggedIn} />} />
                 <Route path='/club-room' element={<ClubRoom isLoggedIn={isLoggedIn} />} />
+                <Route path='/study-room' element={<StudyRoom isLoggedIn={isLoggedIn} />} />
                 <Route path='/grill' element={<Grill isLoggedIn={isLoggedIn} />} />
                 <Route
                     path='/login'

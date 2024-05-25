@@ -3,9 +3,32 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ReservationForm = ({ formFields, onSubmit, onTypeChange }) => {
     const [formData, setFormData] = useState({});
+    const [errors, setErrors] = useState({});
 
     const handleChange = (e, field) => {
         const { name, value, type, checked } = e.target;
+        let updatedValue = value;
+
+        if (field.type === 'date' || field.type === 'time') {
+            const isValid = field.validation ? field.validation(value) : true;
+            if (!isValid) {
+                setErrors(prevErrors => ({
+                    ...prevErrors,
+                    [name]: `Invalid value for ${field.labelText}`,
+                }));
+                return;
+            }
+            setErrors(prevErrors => {
+                const { [name]: removed, ...rest } = prevErrors;
+                return rest;
+            });
+        }
+
+        if (field.type === 'time') {
+            // Append ":00" to the time value to include seconds
+            updatedValue = `${value}:00`;
+        }
+
         setFormData(prevData => {
             if (type === 'checkbox') {
                 const currentValues = prevData[name] || [];
@@ -23,20 +46,42 @@ const ReservationForm = ({ formFields, onSubmit, onTypeChange }) => {
             } else {
                 return {
                     ...prevData,
-                    [name]: value,
+                    [name]: updatedValue,
                 };
             }
         });
 
-        // Call onTypeChange if the changed field is 'type'
         if (field.name === 'type' && onTypeChange) {
-            onTypeChange({ value });
+            onTypeChange({ value: updatedValue });
         }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(formData);
+
+        let validationErrors = {};
+        formFields.forEach(field => {
+            const value = formData[field.name];
+            if (field.validation && !field.validation(value)) {
+                validationErrors[field.name] = `Invalid value for ${field.labelText}`;
+            }
+        });
+
+        setErrors(validationErrors);
+
+        if (Object.keys(validationErrors).length === 0) {
+            const payload = {
+                start_datetime: `${formData.startDate}T${formData.startTime}`,
+                end_datetime: `${formData.endDate}T${formData.endTime}`,
+                purpose: formData.purpose,
+                guests: parseInt(formData.guests, 10),
+                reservation_type: formData.type,
+                email: formData.email,
+                additional_services: formData.additionalServices || [],
+                username: formData.username,
+            };
+            onSubmit(payload);
+        }
     };
 
     return (
@@ -72,15 +117,20 @@ const ReservationForm = ({ formFields, onSubmit, onTypeChange }) => {
                                     </div>
                                 ))}
                             </div>
-                        ) : (
-                            <input
-                                type={field.type}
-                                className="form-control"
-                                name={field.name}
-                                value={formData[field.name] || ''}
-                                onChange={(e) => handleChange(e, field)}
-                            />
-                        )}
+                        ) : (field.type === 'empty' ?
+                            (<> </>)
+                            :
+                            (<input
+                                    type={field.type}
+                                    className="form-control"
+                                    name={field.name}
+                                    value={formData[field.name] || ''}
+                                    onChange={(e) => handleChange(e, field)}
+                                    min={field.min}
+                                    max={field.max}
+                                />
+                            ))}
+                        {errors[field.name] && <div className="text-danger">{errors[field.name]}</div>}
                     </div>
                 ))}
                 <button type="submit" className="btn btn-secondary">Submit</button>
@@ -90,3 +140,4 @@ const ReservationForm = ({ formFields, onSubmit, onTypeChange }) => {
 };
 
 export default ReservationForm;
+

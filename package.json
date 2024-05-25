@@ -15,7 +15,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start_server": "cross-env HOST=rezervace.buk.cvut.cz PORT=80 allowedHosts=\"rezervace.buk.cvut.cz,localhost\" react-scripts start",
+    "start_server": "cross-env HOST=http://rezervace.buk.cvut.cz PORT=80 react-scripts start",
     "start_local": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

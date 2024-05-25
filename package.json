@@ -21,6 +21,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "proxy": "https://rezervace.buk.cvut.cz:8000",
   "eslintConfig": {
     "extends": [
       "react-app",

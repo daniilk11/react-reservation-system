@@ -71,7 +71,7 @@ const Header = ({ isLoggedIn, onLogout }) => {
                     </NavLink>
                 </li>
             </ul>
-            <div className="logout-section">
+            <div className="log-section">
                 {isLoggedIn ? (
                     <>
                         <li className="nav-item">Welcome, salam!</li>

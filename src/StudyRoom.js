@@ -72,12 +72,12 @@ const StudyRoom = ({isLoggedIn}) => {
 
     return (
         <div>
-            <GoogleCalendar src={studyRoomCalendarLink}/>
             {isLoggedIn ? ( // if the user is logged in, render the ReservationForm
                 <ReservationForm formFields={formFields}/>
             ) : ( // if the user is not logged in, render the LoginInfo
                 <LoginInfo/>
             )}
+            <GoogleCalendar src={studyRoomCalendarLink}/>
         </div>
     );
 };

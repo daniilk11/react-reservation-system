@@ -1,19 +1,23 @@
-import './Header.css';
 import LoginInfo from "./LoginInfo";
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import ReservationForm from "./ReservationForm";
+import LoginButton from "./LoginButton";
+import './Header.css';
 
-const Header = ({ isLoggedIn, onLogout }) => {
+
+const Header = ({ username,isLoggedIn, onLogout }) => {
     // use the useLocation hook to get the current pathname
     const location = useLocation();
     const pathname = location.pathname;
 
     // use the pathname to determine the selected room
     const [selectedRoom, setSelectedRoom] = useState(null);
-    useEffect(() => {
+
+    useEffect(() => { // TODO
         if (pathname === '/study-room') {
             setSelectedRoom('Study Room');
-        } else if (pathname === '/club-room') {
+        } else if (pathname === '/club-room' || pathname === '/') {
             setSelectedRoom('Club Room');
         } else if (pathname === '/grill') {
             setSelectedRoom('Grill');
@@ -25,35 +29,15 @@ const Header = ({ isLoggedIn, onLogout }) => {
     // use a ref to store the header element
     const headerRef = useRef(null);
 
-    // use the selectedRoom state to conditionally render the room name
-    let roomName;
-    if (selectedRoom) {
-        roomName = (
-            <div className="room-name" ref={headerRef}>
-                {selectedRoom}
-            </div>
-        );
-    } else {
-        roomName = null;
-    }
+
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light header">
             <ul className="navbar-nav">
                 <li className="nav-item">
                     <NavLink
-                        to="/study-room"
-                        className={({ isActive }) =>
-                            isActive ? "nav-link selected selected-link" : "nav-link"
-                        }
-                    >
-                        Reserve a Study Room
-                    </NavLink>
-                </li>
-                <li className="nav-item">
-                    <NavLink
                         to="/club-room"
-                        className={({ isActive }) =>
+                        className={({isActive}) =>
                             isActive ? "nav-link selected selected-link" : "nav-link"
                         }
                     >
@@ -62,39 +46,59 @@ const Header = ({ isLoggedIn, onLogout }) => {
                 </li>
                 <li className="nav-item">
                     <NavLink
+                        to="/study-room"
+                        className={({isActive}) =>
+                            isActive ? "nav-link selected selected-link" : "nav-link"
+                        }
+                    >
+                        Reserve a Study Room
+                    </NavLink>
+                </li>
+                <li className="nav-item">
+                    <NavLink
                         to="/grill"
-                        className={({ isActive }) =>
+                        className={({isActive}) =>
                             isActive ? "nav-link selected selected-link" : "nav-link"
                         }
                     >
                         Reserve a Grill
                     </NavLink>
                 </li>
-            </ul>
-            <div className="logout-section">
-                {isLoggedIn ? (
-                    <>
-                        <li className="nav-item">Welcome, salam!</li>
-                        <li className="nav-item">
-                            <NavLink
-                                to="/logout"
-                                className={({ isActive }) =>
-                                    isActive ? "nav-link selected selected-link" : "nav-link"
-                                }
-                            >
-                                Log out
-                            </NavLink>
-                        </li>
-                    </>
-                ) : (
+                <li className="nav-item">
                     <NavLink
-                        to="/login"
+                        to="/create_calendar"
                         className={({isActive}) =>
                             isActive ? "nav-link selected selected-link" : "nav-link"
                         }
                     >
-                        Log in
+                        Create Calendar
                     </NavLink>
+                </li>
+                <li className="nav-item">
+                    <NavLink
+                        to="/create_service"
+                        className={({isActive}) =>
+                            isActive ? "nav-link selected selected-link" : "nav-link"
+                        }
+                    >
+                        Create Mini Service
+                    </NavLink>
+                </li>
+            </ul>
+            <div className="log-section">
+                {isLoggedIn ? (
+                    <div className="logout">
+                        <div className="text">Welcome, {username}</div>
+                        <NavLink
+                                to="/logout"
+                                className={({isActive}) =>
+                                    isActive ? "nav-link selected selected-link" : "nav-link"
+                                }>
+                            Log out
+                        </NavLink>
+                    </div>
+                ) : (
+                    <LoginButton />
                 )}
             </div>
         </nav>

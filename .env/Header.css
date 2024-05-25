@@ -14,7 +14,7 @@
 }
 
 /* Styles for the logout section */
-.logout-section {
+.log-section {
     background-color: wheat;
     margin-left: auto; /* This will push the element to the right */
     padding: 0.5rem 1rem; /* Optional: add padding for better appearance */

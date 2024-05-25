@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import StudyRoom from './StudyRoom';
 import ClubRoom from './ClubRoom';
 import Grill from './Grill';
-import LoginInfo from './LoginInfo';
-
 
 function RedirectToExternal({ url }) {
     useEffect(() => {
@@ -15,35 +13,61 @@ function RedirectToExternal({ url }) {
     return null; // Since we are redirecting, there's no need to render anything
 }
 
+function Logout({ onLogout }) {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        onLogout();
+        navigate('/'); // Redirect to home page or any other route after logout
+    }, [onLogout, navigate]);
+
+    return null;
+}
+
+function Login({ onLogin }) {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const userNameParam = params.get('username');
+        if (userNameParam) {
+            onLogin(userNameParam);
+            navigate('/'); // Redirect to home page or any other route after login
+        }
+    }, [location, onLogin, navigate]);
+
+    return null;
+}
 
 function App() {
-    // set a default value for the isLoggedIn state
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [username, setUsername] = useState(null);
+    const location = useLocation();
 
     const handleLogin = useCallback((userName) => {
         setIsLoggedIn(true);
-        // store the user's name in the local storage or a global state
+        setUsername(userName);
         localStorage.setItem('userName', userName);
     }, []);
 
-    const handleLogout = () => {
+    const handleLogout = useCallback(() => {
         setIsLoggedIn(false);
-        // remove the user's name from the local storage or a global state
+        setUsername(null);
         localStorage.removeItem('userName');
-    };
+    }, []);
 
-    // use the useEffect hook to check the user's login status when the app loads
     useEffect(() => {
         const storedUserName = localStorage.getItem('userName');
         if (storedUserName) {
             setIsLoggedIn(true);
+            setUsername(storedUserName);
         }
     }, []);
 
-
     return (
-        <Router>
-            <Header isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+        <div>
+            <Header isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
             <Routes>
                 <Route path='/club-room' element={<ClubRoom isLoggedIn={isLoggedIn} />} />
                 <Route path='/study-room' element={<StudyRoom isLoggedIn={isLoggedIn} />} />
@@ -52,9 +76,11 @@ function App() {
                     path='/login'
                     element={<RedirectToExternal url="https://rezervace.buk.cvut.cz:8000/auth_is/login" />}
                 />
+                <Route path='/logined' element={<Login onLogin={handleLogin} />} />
+                <Route path='/logout' element={<Logout onLogout={handleLogout} />} />
                 <Route path='/' element={<ClubRoom isLoggedIn={isLoggedIn} />} />
             </Routes>
-        </Router>
+        </div>
     );
 }
 

@@ -72,12 +72,12 @@ const Grill = ({isLoggedIn}) => {
 
     return (
         <div>
-            <GoogleCalendar src={grillRoomCalendarLink}/>
             {isLoggedIn ? ( // if the user is logged in, render the ReservationForm
                 <ReservationForm formFields={formFields}/>
             ) : ( // if the user is not logged in, render the LoginInfo
                 <LoginInfo/>
             )}
+            <GoogleCalendar src={grillRoomCalendarLink}/>
         </div>
     );
 };

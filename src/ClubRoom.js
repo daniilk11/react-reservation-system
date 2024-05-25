@@ -124,7 +124,7 @@ const ClubRoom = ({ isLoggedIn }) => {
         axios.post(domenServer + '/events/post/', formData)
             .then(response => {
                 console.log('Reservation successful', response);
-                setSuccessMessage('Reservation created successfully!');
+                setSuccessMessage(response.data.message);
                 setErrorMessage('');
             })
             .catch(error => {

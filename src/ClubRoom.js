@@ -4,7 +4,7 @@ import GoogleCalendar from './GoogleCalendar';
 import ReservationForm from './ReservationForm';
 import LoginInfo from "./LoginInfo";
 
-const ClubRoom = ({ isLoggedIn }) => {
+const ClubRoom = ({ isLoggedIn, username }) => {
     const [options, setOptions] = useState([]);
     const [additionalServices, setAdditionalServices] = useState([]);
     const [selectedType, setSelectedType] = useState(null);
@@ -69,7 +69,12 @@ const ClubRoom = ({ isLoggedIn }) => {
                 name: 'endDate',
                 type: 'date',
                 labelText: 'End Date',
-                labelColor: 'text-danger'
+                labelColor: 'text-danger',
+                validation: (value) => {
+                    const year = new Date(value).getFullYear();
+                    return year > 2023 && year < 2026;
+                },
+                errorMessage: 'Set proper year',
             },
             {
                 name: 'endTime',
@@ -98,7 +103,6 @@ const ClubRoom = ({ isLoggedIn }) => {
             },
             {
                 name: 'username',
-                type: 'text',
                 labelText: 'Username',
                 labelColor: 'text-primary',
             },
@@ -123,14 +127,20 @@ const ClubRoom = ({ isLoggedIn }) => {
     const handleSubmit = (formData) => {
         axios.post(domenServer + '/events/post/', formData)
             .then(response => {
-                console.log('Reservation successful', response);
-                setSuccessMessage(response.data.message);
-                setErrorMessage('');
+                if (response.status === 200) {
+                    console.log('Reservation successful', response);
+                    setSuccessMessage('Reservation created successfully!');
+                    setErrorMessage('');
+                } else {
+                    console.error('', response);
+                    setSuccessMessage('');
+                    setErrorMessage(`Error creating reservation. ${response.data.message}`);
+                }
             })
             .catch(error => {
                 console.error('Error making reservation:', error);
                 setSuccessMessage('');
-                setErrorMessage('Error creating reservation. Please make sure that data is correct and try again.');
+                setErrorMessage(`Error creating reservation, try again later. ${error.data.message}`);
             });
     };
 
@@ -138,7 +148,7 @@ const ClubRoom = ({ isLoggedIn }) => {
         <div>
             {isLoggedIn ? (
                 <>
-                    <ReservationForm formFields={formFields} onSubmit={handleSubmit} onTypeChange={handleTypeChange} />
+                    <ReservationForm formFields={formFields} username={username} onSubmit={handleSubmit} onTypeChange={handleTypeChange} />
                     {successMessage && <div className="alert alert-success">{successMessage}</div>}
                     {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
                 </>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const ReservationForm = ({ formFields, onSubmit, onTypeChange }) => {
+const ReservationForm = ({ formFields,username, onSubmit, onTypeChange  }) => {
     const [formData, setFormData] = useState({});
     const [errors, setErrors] = useState({});
 
@@ -78,7 +78,7 @@ const ReservationForm = ({ formFields, onSubmit, onTypeChange }) => {
                 reservation_type: formData.type,
                 email: formData.email,
                 additional_services: formData.additionalServices || [],
-                username: formData.username,
+                username: username,
             };
             onSubmit(payload);
         }

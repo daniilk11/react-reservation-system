@@ -12,6 +12,7 @@ const ClubRoom = ({ isLoggedIn }) => {
     const [formFields, setFormFields] = useState([]);
 
     const domenServer =  "https://localhost:8000"
+
     useEffect(() => {
         axios.get(domenServer+"/calendars/alias/klub")
             .then(response => {
@@ -27,7 +28,7 @@ const ClubRoom = ({ isLoggedIn }) => {
 
     useEffect(() => {
         if (selectedType) {
-            axios.get(`/calendars/type/${selectedType}`)
+            axios.get(`${domenServer}/calendars/type/${selectedType}`)
                 .then(response => {
                     const data = response.data;
                     const newAdditionalServices = data.map(service => ({ value: service, label: service }));

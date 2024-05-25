@@ -11,8 +11,9 @@ const ClubRoom = ({ isLoggedIn }) => {
     const [fetchError, setFetchError] = useState(false);
     const [formFields, setFormFields] = useState([]);
 
+    const domenServer =  "https://rezervace.buk.cvut.cz:8000"
     useEffect(() => {
-        axios.get("/calendars/alias/klub")
+        axios.get(domenServer+"/calendars/alias/klub")
             .then(response => {
                 const data = response.data;
                 const newOptions = data.map(name => ({ value: name, label: name }));

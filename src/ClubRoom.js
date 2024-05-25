@@ -8,7 +8,7 @@ const ClubRoom = ({ isLoggedIn, username }) => {
     const [options, setOptions] = useState([]);
     const [additionalServices, setAdditionalServices] = useState([]);
     const [selectedType, setSelectedType] = useState(null);
-    const [fetchError, setFetchError] = useState(false);
+    const [fetchError, setFetchError] = useState(true);
     const [formFields, setFormFields] = useState([]);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -57,30 +57,33 @@ const ClubRoom = ({ isLoggedIn, username }) => {
                 name: 'startDate',
                 type: 'date',
                 labelText: 'Start Date',
-                labelColor: 'text-danger'
+                labelColor: 'text-success',
+                validation: (value) => {
+                    const year = new Date(value).getFullYear();
+                    return year > 2023 && year < 3000;
+                }
             },
             {
                 name: 'startTime',
                 type: 'time',
                 labelText: 'Start Time',
-                labelColor: 'text-danger'
+                labelColor: 'text-success'
             },
             {
                 name: 'endDate',
                 type: 'date',
                 labelText: 'End Date',
-                labelColor: 'text-danger',
+                labelColor: 'text-success',
                 validation: (value) => {
                     const year = new Date(value).getFullYear();
-                    return year > 2023 && year < 2026;
-                },
-                errorMessage: 'Set proper year',
+                    return year > 2023 && year < 3000;
+                }
             },
             {
                 name: 'endTime',
                 type: 'time',
                 labelText: 'End Time',
-                labelColor: 'text-danger'
+                labelColor: 'text-success'
             },
             {
                 name: 'purpose',
@@ -103,8 +106,11 @@ const ClubRoom = ({ isLoggedIn, username }) => {
             },
             {
                 name: 'username',
+                type: 'text',
                 labelText: 'Username',
                 labelColor: 'text-primary',
+                initialValue: username,
+                readOnly: true
             },
             {
                 name: 'type',
@@ -122,7 +128,7 @@ const ClubRoom = ({ isLoggedIn, username }) => {
             },
 
         ]);
-    }, [options, additionalServices, fetchError]);
+    }, [options, additionalServices, fetchError, username]);
 
     const handleSubmit = (formData) => {
         axios.post(domenServer + '/events/post/', formData)

@@ -11,8 +11,8 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
     const [selectedType, setSelectedType] = useState(null);
     const [additionalServices, setAdditionalServices] = useState([]);
     const [collisionWithCalendarOptions, setCollisionWithCalendarOptions] = useState([]);
-    const [errFetchingAdditionalServices, setErrFetchingAdditionalServices] = useState(false);
-    const [errFetchingTypeOfReservations, setErrFetchingTypeOfReservations] = useState(false);
+    const [errFetchingAdditionalServices, setErrFetchingAdditionalServices] = useState(true);
+    const [errFetchingTypeOfReservations, setErrFetchingTypeOfReservations] = useState(true);
 
     useEffect(() => {
         if (selectedType) {

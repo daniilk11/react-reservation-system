@@ -44,7 +44,7 @@ const CreateNewMiniService = ({ username }) => {
         <div className="container">
             <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
                 <div className="form-group">
-                    <label htmlFor="name">Name</label>
+                    <label htmlFor="name">Mini Service Name</label>
                     <input
                         type="text"
                         className="form-control"

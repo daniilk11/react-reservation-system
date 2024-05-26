@@ -149,7 +149,7 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
                 } else {
                     console.error('Error making reservation:', error);
                     setSuccessMessage('');
-                    setErrorMessage(`Error creating reservation, try again later. ${error.response.data.message}`);
+                    setErrorMessage(`Error creating reservation, try again later.`);
                 }
             });
     };

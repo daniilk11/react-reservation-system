@@ -3,8 +3,9 @@ import axios from 'axios';
 import GoogleCalendar from './GoogleCalendar';
 import ReservationForm from './ReservationForm';
 import LoginInfo from "./LoginInfo";
+import Logout from "./Logout";
 
-const ClubRoom = ({ isLoggedIn, username }) => {
+const ClubRoom = ({ isLoggedIn, username,onLogout }) => {
     const [options, setOptions] = useState([]);
     const [additionalServices, setAdditionalServices] = useState([]);
     const [selectedType, setSelectedType] = useState(null);
@@ -105,14 +106,6 @@ const ClubRoom = ({ isLoggedIn, username }) => {
                 labelColor: 'text-primary',
             },
             {
-                name: 'username',
-                type: 'text',
-                labelText: 'Username',
-                labelColor: 'text-primary',
-                initialValue: username,
-                readOnly: true
-            },
-            {
                 name: 'type',
                 type: 'select',
                 labelText: 'Type of Reservation',
@@ -144,20 +137,29 @@ const ClubRoom = ({ isLoggedIn, username }) => {
                 }
             })
             .catch(error => {
-                console.error('Error making reservation:', error);
-                setSuccessMessage('');
-                setErrorMessage(`Error creating reservation, try again later. ${error.data.message}`);
+                if (error.status === 401) {
+                    console.error('Error making reservation:', error);
+                    setSuccessMessage('');
+                    setErrorMessage(`401`);
+                } else {
+                    console.error('Error making reservation:', error);
+                    setSuccessMessage('');
+                    setErrorMessage(`Error creating reservation, try again later. ${error.response.data.message}`);
+                }
+
             });
     };
 
     return (
         <div>
             {isLoggedIn ? (
+                errorMessage === '401' ?
+                (<Logout onLogout={onLogout}/>) : (
                 <>
                     <ReservationForm formFields={formFields} username={username} onSubmit={handleSubmit} onTypeChange={handleTypeChange} />
                     {successMessage && <div className="alert alert-success">{successMessage}</div>}
                     {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-                </>
+                </>)
             ) : (
                 <LoginInfo />
             )}

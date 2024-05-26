@@ -4,6 +4,7 @@ import Header from './Header';
 import StudyRoom from './StudyRoom';
 import ClubRoom from './ClubRoom';
 import Grill from './Grill';
+import Logout from "./Logout";
 
 function RedirectToExternal({ url }) {
     useEffect(() => {
@@ -13,16 +14,6 @@ function RedirectToExternal({ url }) {
     return null; // Since we are redirecting, there's no need to render anything
 }
 
-function Logout({ onLogout }) {
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        onLogout();
-        navigate('/'); // Redirect to home page or any other route after logout
-    }, [onLogout, navigate]);
-
-    return null;
-}
 
 function Login({ onLogin }) {
     const location = useLocation();
@@ -69,7 +60,7 @@ function App() {
         <div>
             <Header isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
             <Routes>
-                <Route path='/club-room' element={<ClubRoom isLoggedIn={isLoggedIn} username={username} />} />
+                <Route path='/club-room' element={<ClubRoom isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />} />
                 <Route path='/study-room' element={<StudyRoom isLoggedIn={isLoggedIn} username={username} />} />
                 <Route path='/grill' element={<Grill isLoggedIn={isLoggedIn} username={username} />} />
                 <Route

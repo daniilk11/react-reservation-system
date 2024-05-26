@@ -8,6 +8,7 @@ import Logout from "./Logout";
 import ReservationComponent from "./ReservationComponent";
 import config from "./Config";
 import CreateNewCalendar from "./CreateNewCalendar";
+import CreateNewMiniService from "./CreateNewMiniService";
 
 function RedirectToExternal({ url }) {
     useEffect(() => {
@@ -71,7 +72,7 @@ function App() {
                 <Route path='/logout' element={<Logout onLogout={handleLogout} />} />
                 <Route path='/' element={<ReservationComponent isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} roomCalendarLink={config.clubRoomCalendarLink} selectedZone={"klub"} />} />
                 <Route path='/create-new-calendar' element={<CreateNewCalendar isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />} />
-                {/*<Route path='/create-new-miniservice' element={<CreateNewMiniservice isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />} />*/}
+                <Route path='/create-new-miniservice' element={<CreateNewMiniService isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />} />
             </Routes>
         </div>
     );

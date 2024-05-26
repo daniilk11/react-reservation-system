@@ -6,7 +6,7 @@ import LoginInfo from "./LoginInfo";
 import Logout from "./Logout";
 import config from "./Config";
 
-const CreateNewCalendar = ({ isLoggedIn, username, onLogout, roomCalendarLink, selectedZone }) => {
+const CreateNewMiniService = ({ isLoggedIn, username, onLogout, roomCalendarLink, selectedZone }) => {
     const [options, setOptions] = useState([]);
     const [additionalServices, setAdditionalServices] = useState([]);
     const [selectedType, setSelectedType] = useState(null);
@@ -197,7 +197,7 @@ const CreateNewCalendar = ({ isLoggedIn, username, onLogout, roomCalendarLink, s
     }, []);
 
     const handleSubmit = (formData) => {
-        axios.post(config.domenServer + '/calendars/create_calendar?username='  + username, formData)
+        axios.post(config.domenServer + '/mini_services/create_mini_service?username='+ username, formData)
             .then(response => {
                 if (response.status === 201) {
                     console.log('Reservation successful', response);
@@ -240,4 +240,4 @@ const CreateNewCalendar = ({ isLoggedIn, username, onLogout, roomCalendarLink, s
     );
 };
 
-export default CreateNewCalendar
+export default CreateNewMiniService

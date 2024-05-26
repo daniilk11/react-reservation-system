@@ -228,7 +228,7 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                 ],
             },
         ]);
-    }, [collisionWithCalendarOptions, additionalServices, errFetchingAdditionalServices]);
+    }, [collisionWithCalendarOptions, additionalServices, errFetchingAdditionalServices,errFetchingTypeOfReservations]);
 
     const handleChange = (e, field) => {
         const { name, value, type, checked } = e.target;

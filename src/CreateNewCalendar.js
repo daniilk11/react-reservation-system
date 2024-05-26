@@ -1,56 +1,86 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import GoogleCalendar from './GoogleCalendar';
-import ReservationForm from './ReservationForm';
-import LoginInfo from "./LoginInfo";
-import Logout from "./Logout";
-import config from "./Config";
+import config from './Config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const CreateNewCalendar = ({ username, onSubmit, onTypeChange }) => {
+const CreateNewCalendar = ({ username, onSubmit }) => {
     const [formFields, setFormFields] = useState([]);
     const [formData, setFormData] = useState({});
     const [errors, setErrors] = useState({});
 
+    const [selectedType, setSelectedType] = useState(null);
+    const [additionalServices, setAdditionalServices] = useState([]);
+    const [collisionWithCalendarOptions, setCollisionWithCalendarOptions] = useState([]);
+    const [errFetchingAdditionalServices, setErrFetchingAdditionalServices] = useState(false);
+    const [errFetchingTypeOfReservations, setErrFetchingTypeOfReservations] = useState(false);
+
+    useEffect(() => {
+        if (selectedType) {
+            axios.get(`${config.domenServer}/mini_services/alias/${selectedType}`)
+                .then(response => {
+                    const data = response.data;
+                    const newAdditionalServices = data.map(service => ({ value: service.name, label: service.name }));
+                    setAdditionalServices(newAdditionalServices);
+                    setErrFetchingAdditionalServices(false);
+                })
+                .catch(error => {
+                    console.error("Error fetching additional services:", error);
+                    setAdditionalServices([]);
+                    setErrFetchingAdditionalServices(true);
+                });
+        }
+    }, [selectedType]);
+
+    useEffect(() => {
+        axios.get(`${config.domenServer}/calendars/alias/`)
+            .then(response => {
+                const data = response.data;
+                const newOptions = data.map(name => ({ value: name, label: name }));
+                setCollisionWithCalendarOptions(newOptions);
+                setErrFetchingTypeOfReservations(false);
+            })
+            .catch(error => {
+                console.error("Error fetching reservation types:", error);
+                setErrFetchingTypeOfReservations(true);
+            });
+    }, []);
+
     useEffect(() => {
         setFormFields([
-
-
-            // {
-            //     name: 'calendar_id',
-            //     type: 'text',
-            //     labelText: 'Calendar ID (make google calendar first)',
-            //     labelColor: 'text-success',
-            // },
-            // // firs choose this
-            // {
-            //     name: 'service_alias',
-            //     type: 'text',
-            //     labelText: 'Service Alias',
-            //     labelColor: 'text-success',
-            // },
-            // // then get reservation type by alias /calenadars/alias/   add here
-            // {
-            //     name: 'collision_with_calendar',
-            //     type: 'text',
-            //     labelText: 'Collision with calendar',
-            //     labelColor: 'text-success',
-            //     //  может оправить пустой массив
-            // },
-            // // then
-            // {
-            //     name: 'mini_services',
-            //     type: 'text', // check box type
-            //     labelText: 'Mini Services',
-            //     labelColor: 'text-success',
-            //     //  может оправить пустой массив
-            //
-            //
-            //     // get  to /mini_services/alias/  add here
-            //     // what i get пройти по всем обьектам взять имена от туда .name
-            // },
-
-
+            {
+                name: 'calendar_id',
+                type: 'text',
+                labelText: 'Calendar ID (make google calendar first)',
+                labelColor: 'text-success',
+                validation: (value) => !!value,
+            },
+            {
+                name: 'service_alias',
+                type: 'select',
+                labelText: 'Service Alias',
+                labelColor: 'text-success',
+                options: [
+                    { value: 'klub', label: 'Klub' },
+                    { value: 'stud', label: 'Stud' },
+                    { value: 'grill', label: 'Grill' },
+                ],
+                validation: (value) => !!value,
+            },
+            {
+                name: 'collision_with_calendar',
+                type: 'select',
+                labelText: 'Collision With Calendar',
+                labelColor: 'text-success',
+                options: collisionWithCalendarOptions,
+                validation: (value) => !!value,
+            },
+            errFetchingAdditionalServices ? { type: "empty" } : {
+                name: 'mini_services',
+                type: 'select',
+                labelText: 'Mini Services',
+                labelColor: 'text-success',
+                options: additionalServices,
+            },
             {
                 name: 'collision_with_itself',
                 type: 'checkbox',
@@ -60,11 +90,25 @@ const CreateNewCalendar = ({ username, onSubmit, onTypeChange }) => {
                 validation: (value) => value === 'true',
             },
             {
-                name: 'collision_with_calendar',
+                name: 'reservation_type',
                 type: 'text',
-                labelText: 'Collision With Calendar',
+                labelText: 'Reservation Type',
                 labelColor: 'text-success',
                 validation: (value) => !!value,
+            },
+            {
+                name: 'event_name',
+                type: 'text',
+                labelText: 'Event Name',
+                labelColor: 'text-success',
+                validation: (value) => !!value,
+            },
+            {
+                name: 'max_people',
+                type: 'number',
+                labelText: 'Max People',
+                labelColor: 'text-success',
+                validation: (value) => value >= 0,
             },
             {
                 name: 'club_member_rules',
@@ -183,50 +227,8 @@ const CreateNewCalendar = ({ username, onSubmit, onTypeChange }) => {
                     },
                 ],
             },
-            {
-                name: 'mini_services',
-                type: 'text',
-                labelText: 'Mini Services',
-                labelColor: 'text-success',
-                validation: (value) => !!value,
-            },
-            {
-                name: 'calendar_id',
-                type: 'text',
-                labelText: 'Calendar ID',
-                labelColor: 'text-success',
-                validation: (value) => !!value,
-            },
-            {
-                name: 'service_alias',
-                type: 'text',
-                labelText: 'Service Alias',
-                labelColor: 'text-success',
-                validation: (value) => !!value,
-            },
-            {
-                name: 'reservation_type',
-                type: 'text',
-                labelText: 'Reservation Type',
-                labelColor: 'text-success',
-                validation: (value) => !!value,
-            },
-            {
-                name: 'event_name',
-                type: 'text',
-                labelText: 'Event Name',
-                labelColor: 'text-success',
-                validation: (value) => !!value,
-            },
-            {
-                name: 'max_people',
-                type: 'number',
-                labelText: 'Max People',
-                labelColor: 'text-success',
-                validation: (value) => value >= 0,
-            },
         ]);
-    }, []);
+    }, [collisionWithCalendarOptions, additionalServices, errFetchingAdditionalServices]);
 
     const handleChange = (e, field) => {
         const { name, value, type, checked } = e.target;
@@ -240,6 +242,10 @@ const CreateNewCalendar = ({ username, onSubmit, onTypeChange }) => {
             ...prevData,
             [name]: updatedValue,
         }));
+
+        if (field.name === 'service_alias') {
+            setSelectedType(value);
+        }
     };
 
     const handleSubmit = (e) => {
@@ -327,6 +333,20 @@ const CreateNewCalendar = ({ username, onSubmit, onTypeChange }) => {
                                 </label>
                             </div>
                         ))
+                    ) : field.type === 'select' ? (
+                        <select
+                            className="form-control"
+                            name={field.name}
+                            value={formData[field.name] || ''}
+                            onChange={(e) => handleChange(e, field)}
+                        >
+                            <option value="">Select an option</option>
+                            {field.options.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
                     ) : (
                         <input
                             type={field.type}
@@ -365,4 +385,3 @@ const CreateNewCalendar = ({ username, onSubmit, onTypeChange }) => {
 };
 
 export default CreateNewCalendar;
-

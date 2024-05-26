@@ -4,8 +4,9 @@ import GoogleCalendar from './GoogleCalendar';
 import ReservationForm from './ReservationForm';
 import LoginInfo from "./LoginInfo";
 import Logout from "./Logout";
+import config from "./Config";
 
-const ClubRoom = ({ isLoggedIn, username,onLogout }) => {
+const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink, selectedZone }) => {
     const [options, setOptions] = useState([]);
     const [additionalServices, setAdditionalServices] = useState([]);
     const [selectedType, setSelectedType] = useState(null);
@@ -14,11 +15,9 @@ const ClubRoom = ({ isLoggedIn, username,onLogout }) => {
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    const domenServer = "https://rezervace.buk.cvut.cz:8000" // TODO set domen delete proxy
-    // "proxy": "https://rezervace.buk.cvut.cz:8000",
 
     useEffect(() => {
-        axios.get(domenServer + "/calendars/alias/klub")
+        axios.get(`${config.domenServer}/calendars/alias/${selectedZone}`)
             .then(response => {
                 const data = response.data;
                 const newOptions = data.map(name => ({ value: name, label: name }));
@@ -29,11 +28,9 @@ const ClubRoom = ({ isLoggedIn, username,onLogout }) => {
             });
     }, []);
 
-    const clubRoomCalendarLink = "https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Europe%2FPrague&bgcolor=%23B39DDB&title=Club%20Room&showCalendars=0&showTz=0&showPrint=0&hl=en&src=Y185MGMwNTM1ODNkNGQyYWUxNTY1NTFjNmVjZDMxMWY4N2RhZDYxMGEzMjcyNTQ1YzM2Mzg3OTY0NWY2OTY4Y2VmQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=Y18xOTU4NmEzZGE1MGNhMDY1NjZlZjYyMDEyZDY4MjllYmY0ZTMwMjYxMDgyMTJlOWY5ZDBjYzJmYzZiYzdjNDRhQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=Y180ZjNjY2I5YjI1ZTNlMzdiYzFkY2VhODc4NGE4YTExNDQyZDM5ZTcwMDgwOWExMmJlZTIxYmJlZWI2N2FmNzY1QGdyb3VwLmNhbGVuZGFyLmdvb2lsZS5jb20&src=Y184ZmM4YzY3NjBmN2UzMmVkNTc3ODVjZjQ3MzlkYzYzZTQwNmI0YTgwMmFlZWM2NWNhMGIxYTNmNTY2OTYyNjNkQGdyb3VwLmNhbGVuZGFyLmdvb2lsZS5jb20&src=Y19hYzg5MzBiMDAwZTQzODE4NzA3ZDZmZjVlYzRlNDBiN2VmNTI5ZjRkYjc5MDg5Y2Q1YzNlZGFhM2I1OWZiNDFiQGdyb3VwLmNhbGVuZGFyLmdvb2lsZS5jb20&color=%23795548&color=%234285F4&color=%234285F4&color=%239E69AF&color=%239E69AF";
-
     useEffect(() => {
         if (selectedType) {
-            axios.get(`${domenServer}/calendars/type/${selectedType}`)
+            axios.get(`${config.domenServer}/calendars/type/${selectedType}`)
                 .then(response => {
                     const data = response.data;
                     const newAdditionalServices = data.map(service => ({ value: service, label: service }));
@@ -126,10 +123,10 @@ const ClubRoom = ({ isLoggedIn, username,onLogout }) => {
             },
 
         ]);
-    }, [options, additionalServices, fetchError, username]);
+    }, [options, additionalServices, fetchError]);
 
     const handleSubmit = (formData) => {
-        axios.post(domenServer + '/events/post/', formData)
+        axios.post(config.domenServer + '/events/post/', formData)
             .then(response => {
                 if (response.status === 201) {
                     console.log('Reservation successful', response);
@@ -151,7 +148,6 @@ const ClubRoom = ({ isLoggedIn, username,onLogout }) => {
                     setSuccessMessage('');
                     setErrorMessage(`Error creating reservation, try again later. ${error.response.data.message}`);
                 }
-
             });
     };
 
@@ -159,19 +155,19 @@ const ClubRoom = ({ isLoggedIn, username,onLogout }) => {
         <div>
             {isLoggedIn ? (
                 errorMessage === '401' ?
-                (<Logout onLogout={onLogout}/>) :
+                    (<Logout onLogout={onLogout}/>) :
                     (
-                <>
-                    <ReservationForm formFields={formFields} username={username} onSubmit={handleSubmit} onTypeChange={handleTypeChange} />
-                    {successMessage && <div className="alert alert-success">{successMessage}</div>}
-                    {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-                </>)
+                        <>
+                            <ReservationForm formFields={formFields} username={username} onSubmit={handleSubmit} onTypeChange={handleTypeChange} />
+                            {successMessage && <div className="alert alert-success">{successMessage}</div>}
+                            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+                        </>)
             ) : (
                 <LoginInfo />
             )}
-            <GoogleCalendar src={clubRoomCalendarLink} />
+            <GoogleCalendar src={roomCalendarLink} />
         </div>
     );
 };
 
-export default ClubRoom;
+export default ReservationComponent

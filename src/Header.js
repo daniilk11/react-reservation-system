@@ -12,7 +12,7 @@ const Header = ({ username,isLoggedIn, onLogout }) => {
     const pathname = location.pathname;
 
     // use the pathname to determine the selected room
-    const [selectedRoom, setSelectedRoom] = useState(null);
+    const [selectedRoom, setSelectedRoom] = useState(null); // todo Delete
 
     useEffect(() => { // TODO
         if (pathname === '/study-room') {

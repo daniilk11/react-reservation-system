@@ -1,0 +1,9 @@
+const config = {
+    domenServer: "https://rezervace.buk.cvut.cz:8000",
+    clubRoomCalendarLink: "https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Europe%2FPrague&bgcolor=%23B39DDB&title=Club%20Room&showCalendars=0&showTz=0&showPrint=0&hl=en&src=Y185MGMwNTM1ODNkNGQyYWUxNTY1NTFjNmVjZDMxMWY4N2RhZDYxMGEzMjcyNTQ1YzM2Mzg3OTY0NWY2OTY4Y2VmQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=Y18xOTU4NmEzZGE1MGNhMDY1NjZlZjYyMDEyZDY4MjllYmY0ZTMwMjYxMDgyMTJlOWY5ZDBjYzJmYzZiYzdjNDRhQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&src=Y180ZjNjY2I5YjI1ZTNlMzdiYzFkY2VhODc4NGE4YTExNDQyZDM5ZTcwMDgwOWExMmJlZTIxYmJlZWI2N2FmNzY1QGdyb3VwLmNhbGVuZGFyLmdvb20&src=Y184ZmM4YzY3NjBmN2UzMmVkNTc3ODVjZjQ3MzlkYzYzZTQwNmI0YTgwMmFlZWM2NWNhMGIxYTNmNTY2OTYyNjNkQGdyb3VwLmNhbGVuZGFyLmdvb20&src=Y19hYzg5MzBiMDAwZTQzODE4NzA7ZDZmZjVlYzRlNDBiN2VmNTI5ZjRkYjc5MDg5Y2Q1YzNlZGFhM2I1OWZiNDFiQGdyb3VwLmNhbGVuZGFyLmdvb20&color=%23795548&color=%234285F4&color=%234285F4&color=%239E69AF&color=%239E69AF",
+    grillCalendarLink: "https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Europe%2FPrague&bgcolor=%23EF6C00&title=Grill&showCalendars=0&showTz=0&showPrint=0&hl=en&src=Y182Y2FiMzM5NmYzZTBkNDAwZDA3OTA0YjA4ZjQyN2ZmOWM2NmI5MGI4MDk0ODhjZmU2NDAxYTg3ODkxYWIxY2ZkQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&color=%23D81B60",
+    studyRoomCalendarLink: "https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Europe%2FPrague&bgcolor=%23F6BF26&title=Study%20Room&showCalendars=0&showTz=0&showPrint=0&hl=en&src=Y184ZjA3YTA1NGRjNGNkMDJmODQ4NDkxZmZlZTlhZGIwMzAyNjExODExZTcxMWZmZTkyMWU0MDI1ZDE4ZDQyZWYyQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&color=%238E24AA",
+
+};
+
+export default config;

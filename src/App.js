@@ -5,6 +5,8 @@ import StudyRoom from './StudyRoom';
 import ClubRoom from './ClubRoom';
 import Grill from './Grill';
 import Logout from "./Logout";
+import ReservationComponent from "./ReservationComponent";
+import config from "./Config";
 
 function RedirectToExternal({ url }) {
     useEffect(() => {
@@ -60,16 +62,13 @@ function App() {
         <div>
             <Header isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
             <Routes>
-                <Route path='/club-room' element={<ClubRoom isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />} />
-                <Route path='/study-room' element={<StudyRoom isLoggedIn={isLoggedIn} username={username}  onLogout={handleLogout}/>} />
-                <Route path='/grill' element={<Grill isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />} />
-                <Route
-                    path='/login'
-                    element={<RedirectToExternal url="https://rezervace.buk.cvut.cz:8000/auth_is/login" />}
-                />
+                <Route path='/club-room' element={<ReservationComponent isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} roomCalendarLink={config.clubRoomCalendarLink} selectedZone={"klub"} />} />
+                <Route path='/study-room' element={<ReservationComponent isLoggedIn={isLoggedIn} username={username}  onLogout={handleLogout} roomCalendarLink={config.studyRoomCalendarLink} selectedZone={"stud"}/>} />
+                <Route path='/grill' element={<ReservationComponent isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} roomCalendarLink={config.grillCalendarLink} selectedZone={"grill"}/>} />
+                <Route path='/login' element={<RedirectToExternal url="https://rezervace.buk.cvut.cz:8000/auth_is/login" />}/>
                 <Route path='/logined' element={<Login onLogin={handleLogin}  />} />
                 <Route path='/logout' element={<Logout onLogout={handleLogout} />} />
-                <Route path='/' element={<ClubRoom isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />} />
+                <Route path='/' element={<ReservationComponent isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} roomCalendarLink={config.clubRoomCalendarLink} selectedZone={"klub"} />} />
             </Routes>
         </div>
     );

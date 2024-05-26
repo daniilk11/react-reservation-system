@@ -240,10 +240,13 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         let updatedValue = value;
 
         if (field.type === 'checkbox') {
-            const checkboxValue = checked ? 'true' : 'false';
+            const newCheckboxValues = {
+                ...formData.collision_with_calendar,
+                [value]: checked,
+            };
             setFormData(prevData => ({
                 ...prevData,
-                [name]: checkboxValue,
+                collision_with_calendar: newCheckboxValues,
             }));
         } else {
             setFormData(prevData => ({
@@ -256,6 +259,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             setSelectedType(value);
         }
     };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();

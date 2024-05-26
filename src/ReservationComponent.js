@@ -54,7 +54,9 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
 
     useEffect(() => {
         setFormFields([
-            {
+            // todo check here
+            errFetchingTypeOfReservations ? { type: "empty"} : (
+                {
                 name: 'startDate',
                 type: 'date',
                 labelText: 'Start Date',
@@ -123,8 +125,8 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
                 labelText: 'Additional Services',
                 labelColor: 'text-primary',
                 options: additionalServices,
-            },
-
+            }
+            )
         ]);
     }, [options, additionalServices, errFetchingAdditionalServices, errFetchingTypeOfReservations,selectedZone]);
 

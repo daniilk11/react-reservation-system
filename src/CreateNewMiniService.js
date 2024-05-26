@@ -6,238 +6,154 @@ import LoginInfo from "./LoginInfo";
 import Logout from "./Logout";
 import config from "./Config";
 
-const CreateNewMiniService = ({ isLoggedIn, username, onLogout, roomCalendarLink, selectedZone }) => {
-    const [options, setOptions] = useState([]);
-    const [additionalServices, setAdditionalServices] = useState([]);
-    const [selectedType, setSelectedType] = useState(null);
-    const [errFetchingAdditionalServices, seterrFetchingAdditionalServices] = useState(true);
-    const [errFetchingTypeOfReservations, seterrFetchingTypeOfReservations] = useState(true);
-    const [formFields, setFormFields] = useState([]);
+// const CreateNewMiniService = ({ isLoggedIn, username, onLogout, roomCalendarLink, selectedZone }) => {
+//     const [options, setOptions] = useState([]);
+//     const [additionalServices, setAdditionalServices] = useState([]);
+//     const [selectedType, setSelectedType] = useState(null);
+//     const [errFetchingAdditionalServices, seterrFetchingAdditionalServices] = useState(true);
+//     const [errFetchingTypeOfReservations, seterrFetchingTypeOfReservations] = useState(true);
+//     const [formFields, setFormFields] = useState([]);
+//     const [successMessage, setSuccessMessage] = useState('');
+//     const [errorMessage, setErrorMessage] = useState('');
+//
+//
+//
+//     useEffect(() => {
+//         axios.get(`${config.domenServer}/calendars/alias/${selectedZone}`)
+//             .then(response => {
+//                 const data = response.data;
+//                 const newOptions = data.map(name => ({ value: name, label: name }));
+//                 setOptions(newOptions);
+//                 seterrFetchingTypeOfReservations(false); // Reset fetch error if successful response
+//             })
+//             .catch(error => {
+//                 console.error("Error fetching data:", error);
+//                 seterrFetchingTypeOfReservations(true);
+//             });
+//     }, [selectedZone]);
+//
+//     useEffect(() => {
+//         if (selectedType) {
+//             axios.get(`${config.domenServer}/calendars/type/${selectedType}`)
+//                 .then(response => {
+//                     const data = response.data;
+//                     const newAdditionalServices = data.map(service => ({ value: service, label: service }));
+//                     setAdditionalServices(newAdditionalServices);
+//                     seterrFetchingAdditionalServices(false); // Reset fetch error if successful response
+//                 })
+//                 .catch(error => {
+//                     console.error("Error fetching additional services:", error);
+//                     setAdditionalServices([]); // Set additional services to empty array on error
+//                     seterrFetchingAdditionalServices(true); // Set fetch error flag
+//                 });
+//         }
+//     }, [selectedType]);
+//
+//     const handleTypeChange = (selectedOption) => {
+//         setSelectedType(selectedOption.value);
+//     };
+
+
+//     return (
+//         <div>
+//             {isLoggedIn ? (
+//                 errorMessage === '401' ?
+//                     (<Logout onLogout={onLogout}/>) :
+//                     (
+//                         <>
+//                             <ReservationForm formFields={formFields} username={username} onSubmit={handleSubmit} onTypeChange={handleTypeChange} />
+//                             {successMessage && <div className="alert alert-success">{successMessage}</div>}
+//                             {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+//                         </>)
+//             ) : (
+//                 <LoginInfo />
+//             )}
+//         </div>
+//     );
+// };
+
+
+const CreateNewMiniService = ({ username }) => {
+    const [formData, setFormData] = useState({
+        name: '',
+        service_alias: ''
+    });
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [selectedOption, setSelectedOption] = useState('klub');
 
 
-
-    useEffect(() => {
-        axios.get(`${config.domenServer}/calendars/alias/${selectedZone}`)
-            .then(response => {
-                const data = response.data;
-                const newOptions = data.map(name => ({ value: name, label: name }));
-                setOptions(newOptions);
-                seterrFetchingTypeOfReservations(false); // Reset fetch error if successful response
-            })
-            .catch(error => {
-                console.error("Error fetching data:", error);
-                seterrFetchingTypeOfReservations(true);
-            });
-    }, [selectedZone]);
-
-    useEffect(() => {
-        if (selectedType) {
-            axios.get(`${config.domenServer}/calendars/type/${selectedType}`)
-                .then(response => {
-                    const data = response.data;
-                    const newAdditionalServices = data.map(service => ({ value: service, label: service }));
-                    setAdditionalServices(newAdditionalServices);
-                    seterrFetchingAdditionalServices(false); // Reset fetch error if successful response
-                })
-                .catch(error => {
-                    console.error("Error fetching additional services:", error);
-                    setAdditionalServices([]); // Set additional services to empty array on error
-                    seterrFetchingAdditionalServices(true); // Set fetch error flag
-                });
-        }
-    }, [selectedType]);
-
-    const handleTypeChange = (selectedOption) => {
-        setSelectedType(selectedOption.value);
+    const handleChange = (e) => {
+        setSelectedOption(e.target.value);
+        // const { name, value } = e.target;
+        // setFormData({
+        //     ...formData,
+        //     [name]: value
+        // });
     };
 
-    useEffect(() => {
-        setFormFields([
-            {
-                name: 'collision_with_itself',
-                type: 'checkbox',
-                labelText: 'Collision with itself',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'collision_with_calendar',
-                type: 'text',
-                labelText: 'Collision with calendar',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'club_member_rules.night_time',
-                type: 'checkbox',
-                labelText: 'Club Member - Night Time',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'club_member_rules.reservation_more_24_hours',
-                type: 'checkbox',
-                labelText: 'Club Member - Reservation More Than 24 Hours',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'club_member_rules.in_advance_hours',
-                type: 'number',
-                labelText: 'Club Member - In Advance Hours',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'club_member_rules.in_advance_minutes',
-                type: 'number',
-                labelText: 'Club Member - In Advance Minutes',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'club_member_rules.in_advance_day',
-                type: 'number',
-                labelText: 'Club Member - In Advance Days',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'active_member_rules.night_time',
-                type: 'checkbox',
-                labelText: 'Active Member - Night Time',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'active_member_rules.reservation_more_24_hours',
-                type: 'checkbox',
-                labelText: 'Active Member - Reservation More Than 24 Hours',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'active_member_rules.in_advance_hours',
-                type: 'number',
-                labelText: 'Active Member - In Advance Hours',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'active_member_rules.in_advance_minutes',
-                type: 'number',
-                labelText: 'Active Member - In Advance Minutes',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'active_member_rules.in_advance_day',
-                type: 'number',
-                labelText: 'Active Member - In Advance Days',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'manager_rules.night_time',
-                type: 'checkbox',
-                labelText: 'Manager - Night Time',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'manager_rules.reservation_more_24_hours',
-                type: 'checkbox',
-                labelText: 'Manager - Reservation More Than 24 Hours',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'manager_rules.in_advance_hours',
-                type: 'number',
-                labelText: 'Manager - In Advance Hours',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'manager_rules.in_advance_minutes',
-                type: 'number',
-                labelText: 'Manager - In Advance Minutes',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'manager_rules.in_advance_day',
-                type: 'number',
-                labelText: 'Manager - In Advance Days',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'mini_services',
-                type: 'text',
-                labelText: 'Mini Services',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'calendar_id',
-                type: 'text',
-                labelText: 'Calendar ID',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'service_alias',
-                type: 'text',
-                labelText: 'Service Alias',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'reservation_type',
-                type: 'text',
-                labelText: 'Reservation Type',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'event_name',
-                type: 'text',
-                labelText: 'Event Name',
-                labelColor: 'text-success',
-            },
-            {
-                name: 'max_people',
-                type: 'number',
-                labelText: 'Max People',
-                labelColor: 'text-success',
-            },
-        ]);
-    }, []);
+
+
 
     const handleSubmit = (formData) => {
         axios.post(config.domenServer + '/mini_services/create_mini_service?username='+ username, formData)
             .then(response => {
                 if (response.status === 201) {
-                    console.log('Reservation successful', response);
-                    setSuccessMessage('Reservation created successfully!');
+                    console.log( response);
+                    setSuccessMessage('Mini service created successfully!');
                     setErrorMessage('');
                 } else {
                     console.error('', response);
                     setSuccessMessage('');
-                    setErrorMessage(`Error creating reservation. ${response.data.message}`);
+                    setErrorMessage(`Error creating mini service. ${response.data.message}`);
                 }
             })
             .catch(error => {
-                if (error.response.status === 401) {
-                    console.error('Error making reservation:', error);
-                    setSuccessMessage('');
-                    setErrorMessage(`401`);
-                } else {
-                    console.error('Error making reservation:', error);
-                    setSuccessMessage('');
-                    setErrorMessage(`Error creating reservation, try again later. ${error.response.data.message}`);
-                }
+                console.error('Error making mini service :', error);
+                setSuccessMessage('');
+                setErrorMessage(`Error creating mini service, try again later.`);
+
             });
     };
 
+
     return (
         <div>
-            {isLoggedIn ? (
-                errorMessage === '401' ?
-                    (<Logout onLogout={onLogout}/>) :
-                    (
-                        <>
-                            <ReservationForm formFields={formFields} username={username} onSubmit={handleSubmit} onTypeChange={handleTypeChange} />
-                            {successMessage && <div className="alert alert-success">{successMessage}</div>}
-                            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-                        </>)
-            ) : (
-                <LoginInfo />
-            )}
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="name">Name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div>
+                    {/*setFormFields([*/}
+                    {/*// name mini services*/}
+                    {/*// harcode selector klub stud griil*/}
+
+                    <label htmlFor="service_alias">Service Alias</label>
+                    <select
+                        id="reservationType"
+                        value={selectedOption}
+                        onChange={handleChange}
+                    >
+                        <option value="klub">Klub</option>
+                        <option value="stud">Stud</option>
+                        <option value="grill">Grill</option>
+                    </select>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+            {successMessage && <div className="alert alert-success">{successMessage}</div>}
+            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
         </div>
     );
 };
+
 
 export default CreateNewMiniService

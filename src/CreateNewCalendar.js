@@ -62,12 +62,6 @@ const CreateNewCalendar = ({ isLoggedIn, username, onLogout, roomCalendarLink, s
                 labelColor: 'text-success',
             },
             {
-                name: 'collision_with_calendar',
-                type: 'text',
-                labelText: 'Collision with calendar',
-                labelColor: 'text-success',
-            },
-            {
                 name: 'club_member_rules.night_time',
                 type: 'checkbox',
                 labelText: 'Club Member - Night Time',
@@ -157,28 +151,44 @@ const CreateNewCalendar = ({ isLoggedIn, username, onLogout, roomCalendarLink, s
                 labelText: 'Manager - In Advance Days',
                 labelColor: 'text-success',
             },
-            {
-                name: 'mini_services',
-                type: 'text',
-                labelText: 'Mini Services',
-                labelColor: 'text-success',
-            },
+
             {
                 name: 'calendar_id',
                 type: 'text',
-                labelText: 'Calendar ID',
+                labelText: 'Calendar ID (make google calendar first)',
                 labelColor: 'text-success',
             },
+            // firs choose this
             {
                 name: 'service_alias',
                 type: 'text',
                 labelText: 'Service Alias',
                 labelColor: 'text-success',
             },
+            // then get reservation type by alias /calenadars/alias/   add here
+            {
+                name: 'collision_with_calendar',
+                type: 'text',
+                labelText: 'Collision with calendar',
+                labelColor: 'text-success',
+                //  может оправить пустой массив
+            },
+            // then
+            {
+                name: 'mini_services',
+                type: 'text', // check box type
+                labelText: 'Mini Services',
+                labelColor: 'text-success',
+                //  может оправить пустой массив
+
+
+                // get  to /mini_services/alias/  add here
+                // what i get пройти по всем обьектам взять имена от туда .name
+            },
             {
                 name: 'reservation_type',
                 type: 'text',
-                labelText: 'Reservation Type',
+                labelText: 'Calendar Name',
                 labelColor: 'text-success',
             },
             {
@@ -192,7 +202,7 @@ const CreateNewCalendar = ({ isLoggedIn, username, onLogout, roomCalendarLink, s
                 type: 'number',
                 labelText: 'Max People',
                 labelColor: 'text-success',
-            },
+            }
         ]);
     }, []);
 
@@ -211,13 +221,15 @@ const CreateNewCalendar = ({ isLoggedIn, username, onLogout, roomCalendarLink, s
             })
             .catch(error => {
                 if (error.response.status === 401) {
-                    console.error('Error making reservation:', error);
+                    // 404 not found
+                    // 400 bad request
+                    console.error('Error making calendar:', error);
                     setSuccessMessage('');
-                    setErrorMessage(`401`);
+                    setErrorMessage(`401`); // TODO make back end response to 401
                 } else {
-                    console.error('Error making reservation:', error);
+                    console.error('Error making calendar:', error);
                     setSuccessMessage('');
-                    setErrorMessage(`Error creating reservation, try again later. ${error.response.data.message}`);
+                    setErrorMessage(`Error creating calendar`);
                 }
             });
     };

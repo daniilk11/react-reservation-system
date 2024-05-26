@@ -307,25 +307,27 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                         {field.labelText}
                     </label>
                     {field.type === 'checkbox' ? (
-                        field.options.map((option) => (
-                            <div key={option.value} className="form-check">
-                                <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    name={field.name}
-                                    value={option.value}
-                                    id={`${field.name}-${option.value}`}
-                                    checked={formData[field.name] === 'true'}
-                                    onChange={(e) => handleChange(e, field)}
-                                />
-                                <label
-                                    className="form-check-label"
-                                    htmlFor={`${field.name}-${option.value}`}
-                                >
-                                    {option.label}
-                                </label>
-                            </div>
-                        ))
+                        <>
+                            {field.options.map((option) => (
+                                <div key={option.value} className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        name={field.name}
+                                        value={option.value}
+                                        id={`${field.name}-${option.value}`}
+                                        checked={formData[field.name] === option.value}
+                                        onChange={(e) => handleChange(e, field)}
+                                    />
+                                    <label
+                                        className="form-check-label"
+                                        htmlFor={`${field.name}-${option.value}`}
+                                    >
+                                        {option.label}
+                                    </label>
+                                </div>
+                            ))}
+                        </>
                     ) : field.type === 'select' ? (
                         <select
                             className="form-control"
@@ -355,6 +357,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                 </div>
             );
         });
+
 
     return (
         <div>

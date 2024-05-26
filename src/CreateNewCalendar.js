@@ -240,13 +240,17 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         let updatedValue = value;
 
         if (field.type === 'checkbox') {
-            updatedValue = checked ? 'true' : 'false';
+            const checkboxValue = checked ? 'true' : 'false';
+            setFormData(prevData => ({
+                ...prevData,
+                [name]: checkboxValue,
+            }));
+        } else {
+            setFormData(prevData => ({
+                ...prevData,
+                [name]: value,
+            }));
         }
-
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: updatedValue,
-        }));
 
         if (field.name === 'service_alias') {
             setSelectedType(value);

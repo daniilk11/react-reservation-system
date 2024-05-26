@@ -3,10 +3,12 @@ import axios from 'axios';
 import config from './Config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const CreateNewCalendar = ({ username, onSubmit }) => {
+const CreateNewCalendar = ({ username, onSubmit = defaultOnSubmit }) => {
     const [formFields, setFormFields] = useState([]);
     const [formData, setFormData] = useState({});
     const [errors, setErrors] = useState({});
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const [selectedType, setSelectedType] = useState(null);
     const [additionalServices, setAdditionalServices] = useState([]);
@@ -33,18 +35,19 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
 
     useEffect(() => {
         if (selectedType) {
-        axios.get(`${config.domenServer}/calendars/alias/${selectedType}`)
-            .then(response => {
-                const data = response.data;
-                const newOptions = data.map(name => ({ value: name, label: name }));
-                setCollisionWithCalendarOptions(newOptions);
-                setErrFetchingTypeOfReservations(false);
-            })
-            .catch(error => {
-                console.error("Error fetching reservation types:", error);
-                setErrFetchingTypeOfReservations(true);
-            });
-    }}, [selectedType]);
+            axios.get(`${config.domenServer}/calendars/alias/${selectedType}`)
+                .then(response => {
+                    const data = response.data;
+                    const newOptions = data.map(name => ({ value: name, label: name }));
+                    setCollisionWithCalendarOptions(newOptions);
+                    setErrFetchingTypeOfReservations(false);
+                })
+                .catch(error => {
+                    console.error("Error fetching reservation types:", error);
+                    setErrFetchingTypeOfReservations(true);
+                });
+        }
+    }, [selectedType]);
 
     useEffect(() => {
         setFormFields([
@@ -69,7 +72,7 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
             },
             errFetchingTypeOfReservations ? { type: "empty" } : {
                 name: 'collision_with_calendar',
-                type: 'select',
+                type: 'checkbox',
                 labelText: 'Collision With Calendar',
                 labelColor: 'text-success',
                 options: collisionWithCalendarOptions,
@@ -229,7 +232,7 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                 ],
             },
         ]);
-    }, [collisionWithCalendarOptions, additionalServices, errFetchingAdditionalServices,errFetchingTypeOfReservations]);
+    }, [collisionWithCalendarOptions, additionalServices, errFetchingAdditionalServices, errFetchingTypeOfReservations]);
 
     const handleChange = (e, field) => {
         const { name, value, type, checked } = e.target;
@@ -292,9 +295,9 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                 manager_rules: {
                     night_time: formData.manager_night_time === 'true',
                     reservation_more_24_hours: formData.manager_reservation_more_24_hours === 'true',
-                    in_advance_hours: parseInt(formData.in_advance_hours, 10),
-                    in_advance_minutes: parseInt(formData.in_advance_minutes, 10),
-                    in_advance_day: parseInt(formData.in_advance_day, 10),
+                    in_advance_hours: parseInt(formData.manager_in_advance_hours, 10),
+                    in_advance_minutes: parseInt(formData.manager_in_advance_minutes, 10),
+                    in_advance_day: parseInt(formData.manager_in_advance_day, 10),
                 },
                 mini_services: [formData.mini_services],
                 calendar_id: formData.calendar_id,
@@ -304,7 +307,7 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                 max_people: parseInt(formData.max_people, 10),
                 username: username,
             };
-            onSubmit(payload);
+            onSubmit(payload,username);
         }
     };
 
@@ -389,9 +392,33 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                 <button type="submit" className="btn btn-secondary">
                     Submit
                 </button>
+                {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
+                {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
             </form>
         </div>
     );
+};
+
+const defaultOnSubmit = (formData, username) => {
+    axios.post(`${config.domenServer}/calendars/create_calendar?username=${username}`, formData)
+        .then(response => {
+            if (response.status === 201) {
+                console.log('Reservation successful', response);
+                alert('Reservation created successfully!');
+            } else {
+                console.error('Error creating reservation', response);
+                alert(`Error creating reservation. ${response.data.message}`);
+            }
+        })
+        .catch(error => {
+            if (error.response && error.response.status === 401) {
+                console.error('Error making reservation:', error);
+                alert(`401 Unauthorized`);
+            } else {
+                console.error('Error making reservation:', error);
+                alert(`Error creating reservation, try again later.`);
+            }
+        });
 };
 
 export default CreateNewCalendar;

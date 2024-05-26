@@ -10,7 +10,8 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
     const [options, setOptions] = useState([]);
     const [additionalServices, setAdditionalServices] = useState([]);
     const [selectedType, setSelectedType] = useState(null);
-    const [fetchError, setFetchError] = useState(true);
+    const [errFetchingAdditionalServices, seterrFetchingAdditionalServices] = useState(true);
+    const [errFetchingTypeOfReservations, seterrFetchingTypeOfReservations] = useState(true);
     const [formFields, setFormFields] = useState([]);
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -22,9 +23,11 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
                 const data = response.data;
                 const newOptions = data.map(name => ({ value: name, label: name }));
                 setOptions(newOptions);
+                seterrFetchingTypeOfReservations(false); // Reset fetch error if successful response
             })
             .catch(error => {
                 console.error("Error fetching data:", error);
+                seterrFetchingTypeOfReservations(true);
             });
     }, []);
 
@@ -35,12 +38,12 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
                     const data = response.data;
                     const newAdditionalServices = data.map(service => ({ value: service, label: service }));
                     setAdditionalServices(newAdditionalServices);
-                    setFetchError(false); // Reset fetch error if successful response
+                    seterrFetchingAdditionalServices(false); // Reset fetch error if successful response
                 })
                 .catch(error => {
                     console.error("Error fetching additional services:", error);
                     setAdditionalServices([]); // Set additional services to empty array on error
-                    setFetchError(true); // Set fetch error flag
+                    seterrFetchingAdditionalServices(true); // Set fetch error flag
                 });
         }
     }, [selectedType]);
@@ -107,6 +110,9 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
                 validation: (value) => !!value
             },
             {
+
+            },
+            errFetchingTypeOfReservations ? { type: "empty"} : { // Render empty array if there's a fetch error
                 name: 'type',
                 type: 'select',
                 labelText: 'Type of Reservation',
@@ -114,7 +120,7 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
                 options: options,
                 validation: (value) => !!value
             },
-            fetchError ? { type: "empty"} : { // Render empty array if there's a fetch error
+            errFetchingAdditionalServices ? { type: "empty"} : { // Render empty array if there's a fetch error
                 name: 'additionalServices',
                 type: 'checkbox',
                 labelText: 'Additional Services',
@@ -123,7 +129,7 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
             },
 
         ]);
-    }, [options, additionalServices, fetchError]);
+    }, [options, additionalServices, errFetchingAdditionalServices, errFetchingTypeOfReservations, selectedZone]);
 
     const handleSubmit = (formData) => {
         axios.post(config.domenServer + '/events/post/', formData)

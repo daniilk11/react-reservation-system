@@ -32,7 +32,8 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
     }, [selectedType]);
 
     useEffect(() => {
-        axios.get(`${config.domenServer}/calendars/alias/`)
+        if (selectedType) {
+        axios.get(`${config.domenServer}/calendars/alias/${selectedType}`)
             .then(response => {
                 const data = response.data;
                 const newOptions = data.map(name => ({ value: name, label: name }));
@@ -43,7 +44,7 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                 console.error("Error fetching reservation types:", error);
                 setErrFetchingTypeOfReservations(true);
             });
-    }, []);
+    }}, [selectedType]);
 
     useEffect(() => {
         setFormFields([

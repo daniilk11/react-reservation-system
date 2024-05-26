@@ -3,7 +3,7 @@ import axios from 'axios';
 import config from './Config';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const CreateNewCalendar = ({ username, onSubmit = defaultOnSubmit }) => {
+const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
     const [formFields, setFormFields] = useState([]);
     const [formData, setFormData] = useState({});
     const [errors, setErrors] = useState({});
@@ -76,7 +76,7 @@ const CreateNewCalendar = ({ username, onSubmit = defaultOnSubmit }) => {
                 labelText: 'Collision With Calendar',
                 labelColor: 'text-success',
                 options: collisionWithCalendarOptions,
-                validation: (value) => !!value,
+                validation: (value) => value === 'true',
             },
             errFetchingAdditionalServices ? { type: "empty" } : {
                 name: 'mini_services',
@@ -254,72 +254,43 @@ const CreateNewCalendar = ({ username, onSubmit = defaultOnSubmit }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        let validationErrors = {};
-        formFields.forEach((field) => {
-            if (field.type === 'group') {
-                field.fields.forEach((subField) => {
-                    const value = formData[subField.name];
-                    if (subField.validation && !subField.validation(value)) {
-                        validationErrors[subField.name] = `Invalid value for ${subField.labelText}`;
-                    }
-                });
-            } else {
-                const value = formData[field.name];
-                if (field.validation && !field.validation(value)) {
-                    validationErrors[field.name] = `Invalid value for ${field.labelText}`;
+        axios.post(`${config.domenServer}/calendars/create_calendar?username=${username}`, formData)
+            .then(response => {
+                if (response.status === 201) {
+                    console.log('Reservation successful', response);
+                    setSuccessMessage('Reservation created successfully!');
+                    setErrorMessage('');
+                } else {
+                    console.error('Error creating reservation', response);
+                    setSuccessMessage('');
+                    setErrorMessage(`Error creating reservation. ${response.data.message}`);
                 }
-            }
-        });
-
-        setErrors(validationErrors);
-
-        if (Object.keys(validationErrors).length === 0) {
-            const payload = {
-                collision_with_itself: formData.collision_with_itself === 'true',
-                collision_with_calendar: [formData.collision_with_calendar],
-                club_member_rules: {
-                    night_time: formData.club_night_time === 'true',
-                    reservation_more_24_hours: formData.club_reservation_more_24_hours === 'true',
-                    in_advance_hours: parseInt(formData.club_in_advance_hours, 10),
-                    in_advance_minutes: parseInt(formData.club_in_advance_minutes, 10),
-                    in_advance_day: parseInt(formData.club_in_advance_day, 10),
-                },
-                active_member_rules: {
-                    night_time: formData.active_night_time === 'true',
-                    reservation_more_24_hours: formData.active_reservation_more_24_hours === 'true',
-                    in_advance_hours: parseInt(formData.active_in_advance_hours, 10),
-                    in_advance_minutes: parseInt(formData.active_in_advance_minutes, 10),
-                    in_advance_day: parseInt(formData.active_in_advance_day, 10),
-                },
-                manager_rules: {
-                    night_time: formData.manager_night_time === 'true',
-                    reservation_more_24_hours: formData.manager_reservation_more_24_hours === 'true',
-                    in_advance_hours: parseInt(formData.manager_in_advance_hours, 10),
-                    in_advance_minutes: parseInt(formData.manager_in_advance_minutes, 10),
-                    in_advance_day: parseInt(formData.manager_in_advance_day, 10),
-                },
-                mini_services: [formData.mini_services],
-                calendar_id: formData.calendar_id,
-                service_alias: formData.service_alias,
-                reservation_type: formData.reservation_type,
-                event_name: formData.event_name,
-                max_people: parseInt(formData.max_people, 10),
-                username: username,
-            };
-            onSubmit(payload,username);
-        }
+            })
+            .catch(error => {
+                if (error.response && error.response.status === 401) {
+                    console.error('Error making reservation:', error);
+                    setSuccessMessage('');
+                    setErrorMessage(`401`);
+                } else {
+                    console.error('Error making reservation:', error);
+                    setSuccessMessage('');
+                    setErrorMessage(`Error creating reservation, try again later.`);
+                }
+            });
     };
 
     const renderFormFields = (fields) =>
         fields.map((field) => {
             if (field.type === 'group') {
                 return (
-                    <div key={field.name} className="mb-4">
-                        <h5>{field.labelText}</h5>
+                    <div key={field.name} className="bg-light p-3 rounded mt-3">
+                        <h5 className={field.labelColor}>{field.labelText}</h5>
                         {renderFormFields(field.fields)}
                     </div>
                 );
+            }
+            if (field.type === 'empty') {
+                return null;
             }
             return (
                 <div className="form-group" key={field.name}>
@@ -377,48 +348,39 @@ const CreateNewCalendar = ({ username, onSubmit = defaultOnSubmit }) => {
         });
 
     return (
-        <div className="container">
-            <h1
-                className="my-4 text-center text-white"
-                style={{
-                    background: 'linear-gradient(to right, #00b894, #008e7a)',
-                    padding: '20px 0',
-                }}
-            >
-                Create new Calendar
-            </h1>
-            <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
-                {renderFormFields(formFields)}
-                <button type="submit" className="btn btn-secondary">
-                    Submit
-                </button>
-                {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
-                {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
-            </form>
+        <div>
+            {isLoggedIn ? (
+                errorMessage === '401' ? (
+                    <Logout onLogout={onLogout} />
+                ) : (
+                    <>
+                        <div className="container">
+                            <h1
+                                className="my-4 text-center text-white"
+                                style={{
+                                    background: 'linear-gradient(to right, #00b894, #008e7a)',
+                                    padding: '20px 0',
+                                }}
+                            >
+                                Create new Calendar
+                            </h1>
+                            <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
+                                {renderFormFields(formFields)}
+                                <button type="submit" className="btn btn-secondary">
+                                    Submit
+                                </button>
+                                {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
+                                {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+                            </form>
+                        </div>
+                    </>
+                )
+            ) : (
+                <LoginInfo />
+            )}
+            <GoogleCalendar src="roomCalendarLink" />
         </div>
     );
-};
-
-const defaultOnSubmit = (formData, username) => {
-    axios.post(`${config.domenServer}/calendars/create_calendar?username=${username}`, formData)
-        .then(response => {
-            if (response.status === 201) {
-                console.log('Reservation successful', response);
-                alert('Reservation created successfully!');
-            } else {
-                console.error('Error creating reservation', response);
-                alert(`Error creating reservation. ${response.data.message}`);
-            }
-        })
-        .catch(error => {
-            if (error.response && error.response.status === 401) {
-                console.error('Error making reservation:', error);
-                alert(`401 Unauthorized`);
-            } else {
-                console.error('Error making reservation:', error);
-                alert(`Error creating reservation, try again later.`);
-            }
-        });
 };
 
 export default CreateNewCalendar;

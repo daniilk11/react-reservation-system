@@ -124,7 +124,6 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
                 labelColor: 'text-primary',
                 options: additionalServices,
             },
-
         ]);
     }, [options, additionalServices, errFetchingAdditionalServices, errFetchingTypeOfReservations,selectedZone]);
 

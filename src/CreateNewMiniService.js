@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import config from "./Config";
 
 const CreateNewMiniService = ({ username }) => {
     const [formData, setFormData] = useState({
@@ -20,7 +21,7 @@ const CreateNewMiniService = ({ username }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post(`/mini_services/create_mini_service?username=${username}`, formData)
+        axios.post(`${config.domenServer}/mini_services/create_mini_service?username=${username}`, formData)
             .then(response => {
                 if (response.status === 201) {
                     console.log(response);

@@ -381,7 +381,7 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                     padding: '20px 0',
                 }}
             >
-                Reservation Form
+                Create new Calendar
             </h1>
             <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
                 {renderFormFields(formFields)}

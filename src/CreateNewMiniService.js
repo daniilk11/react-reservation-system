@@ -42,6 +42,15 @@ const CreateNewMiniService = ({ username }) => {
 
     return (
         <div className="container">
+            <h1
+                className="my-4 text-center text-white"
+                style={{
+                    background: 'linear-gradient(to right, #00b894, #008e7a)',
+                    padding: '20px 0',
+                }}
+            >
+                Create new Mini Service
+            </h1>
             <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
                 <div className="form-group">
                     <label htmlFor="name">Mini Service Name</label>

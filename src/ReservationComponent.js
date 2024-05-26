@@ -109,9 +109,6 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
                 labelColor: 'text-primary',
                 validation: (value) => !!value
             },
-            {
-
-            },
             errFetchingTypeOfReservations ? { type: "empty"} : { // Render empty array if there's a fetch error
                 name: 'type',
                 type: 'select',

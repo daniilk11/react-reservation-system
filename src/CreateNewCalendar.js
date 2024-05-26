@@ -66,7 +66,7 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                 ],
                 validation: (value) => !!value,
             },
-            {
+            errFetchingTypeOfReservations ? { type: "empty" } : {
                 name: 'collision_with_calendar',
                 type: 'select',
                 labelText: 'Collision With Calendar',
@@ -116,33 +116,33 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                 labelText: 'Club Member Rules',
                 fields: [
                     {
-                        name: 'night_time',
+                        name: 'club_night_time',
                         type: 'checkbox',
                         labelText: 'Night Time',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
                     },
                     {
-                        name: 'reservation_more_24_hours',
+                        name: 'club_reservation_more_24_hours',
                         type: 'checkbox',
                         labelText: 'Reservation More Than 24 Hours',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
                     },
                     {
-                        name: 'in_advance_hours',
+                        name: 'club_in_advance_hours',
                         type: 'number',
                         labelText: 'In Advance Hours',
                         labelColor: 'text-success',
                     },
                     {
-                        name: 'in_advance_minutes',
+                        name: 'club_in_advance_minutes',
                         type: 'number',
                         labelText: 'In Advance Minutes',
                         labelColor: 'text-success',
                     },
                     {
-                        name: 'in_advance_day',
+                        name: 'club_in_advance_day',
                         type: 'number',
                         labelText: 'In Advance Day',
                         labelColor: 'text-success',
@@ -155,33 +155,33 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                 labelText: 'Active Member Rules',
                 fields: [
                     {
-                        name: 'night_time',
+                        name: 'active_night_time',
                         type: 'checkbox',
                         labelText: 'Night Time',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
                     },
                     {
-                        name: 'reservation_more_24_hours',
+                        name: 'active_reservation_more_24_hours',
                         type: 'checkbox',
                         labelText: 'Reservation More Than 24 Hours',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
                     },
                     {
-                        name: 'in_advance_hours',
+                        name: 'active_in_advance_hours',
                         type: 'number',
                         labelText: 'In Advance Hours',
                         labelColor: 'text-success',
                     },
                     {
-                        name: 'in_advance_minutes',
+                        name: 'active_in_advance_minutes',
                         type: 'number',
                         labelText: 'In Advance Minutes',
                         labelColor: 'text-success',
                     },
                     {
-                        name: 'in_advance_day',
+                        name: 'active_in_advance_day',
                         type: 'number',
                         labelText: 'In Advance Day',
                         labelColor: 'text-success',
@@ -194,33 +194,33 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                 labelText: 'Manager Rules',
                 fields: [
                     {
-                        name: 'night_time',
+                        name: 'manager_night_time',
                         type: 'checkbox',
                         labelText: 'Night Time',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
                     },
                     {
-                        name: 'reservation_more_24_hours',
+                        name: 'manager_reservation_more_24_hours',
                         type: 'checkbox',
                         labelText: 'Reservation More Than 24 Hours',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
                     },
                     {
-                        name: 'in_advance_hours',
+                        name: 'manager_in_advance_hours',
                         type: 'number',
                         labelText: 'In Advance Hours',
                         labelColor: 'text-success',
                     },
                     {
-                        name: 'in_advance_minutes',
+                        name: 'manager_in_advance_minutes',
                         type: 'number',
                         labelText: 'In Advance Minutes',
                         labelColor: 'text-success',
                     },
                     {
-                        name: 'in_advance_day',
+                        name: 'manager_in_advance_day',
                         type: 'number',
                         labelText: 'In Advance Day',
                         labelColor: 'text-success',
@@ -253,9 +253,18 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
 
         let validationErrors = {};
         formFields.forEach((field) => {
-            const value = formData[field.name];
-            if (field.validation && !field.validation(value)) {
-                validationErrors[field.name] = `Invalid value for ${field.labelText}`;
+            if (field.type === 'group') {
+                field.fields.forEach((subField) => {
+                    const value = formData[subField.name];
+                    if (subField.validation && !subField.validation(value)) {
+                        validationErrors[subField.name] = `Invalid value for ${subField.labelText}`;
+                    }
+                });
+            } else {
+                const value = formData[field.name];
+                if (field.validation && !field.validation(value)) {
+                    validationErrors[field.name] = `Invalid value for ${field.labelText}`;
+                }
             }
         });
 
@@ -266,22 +275,22 @@ const CreateNewCalendar = ({ username, onSubmit }) => {
                 collision_with_itself: formData.collision_with_itself === 'true',
                 collision_with_calendar: [formData.collision_with_calendar],
                 club_member_rules: {
-                    night_time: formData.night_time === 'true',
-                    reservation_more_24_hours: formData.reservation_more_24_hours === 'true',
-                    in_advance_hours: parseInt(formData.in_advance_hours, 10),
-                    in_advance_minutes: parseInt(formData.in_advance_minutes, 10),
-                    in_advance_day: parseInt(formData.in_advance_day, 10),
+                    night_time: formData.club_night_time === 'true',
+                    reservation_more_24_hours: formData.club_reservation_more_24_hours === 'true',
+                    in_advance_hours: parseInt(formData.club_in_advance_hours, 10),
+                    in_advance_minutes: parseInt(formData.club_in_advance_minutes, 10),
+                    in_advance_day: parseInt(formData.club_in_advance_day, 10),
                 },
                 active_member_rules: {
-                    night_time: formData.night_time === 'true',
-                    reservation_more_24_hours: formData.reservation_more_24_hours === 'true',
-                    in_advance_hours: parseInt(formData.in_advance_hours, 10),
-                    in_advance_minutes: parseInt(formData.in_advance_minutes, 10),
-                    in_advance_day: parseInt(formData.in_advance_day, 10),
+                    night_time: formData.active_night_time === 'true',
+                    reservation_more_24_hours: formData.active_reservation_more_24_hours === 'true',
+                    in_advance_hours: parseInt(formData.active_in_advance_hours, 10),
+                    in_advance_minutes: parseInt(formData.active_in_advance_minutes, 10),
+                    in_advance_day: parseInt(formData.active_in_advance_day, 10),
                 },
                 manager_rules: {
-                    night_time: formData.night_time === 'true',
-                    reservation_more_24_hours: formData.reservation_more_24_hours === 'true',
+                    night_time: formData.manager_night_time === 'true',
+                    reservation_more_24_hours: formData.manager_reservation_more_24_hours === 'true',
                     in_advance_hours: parseInt(formData.in_advance_hours, 10),
                     in_advance_minutes: parseInt(formData.in_advance_minutes, 10),
                     in_advance_day: parseInt(formData.in_advance_day, 10),

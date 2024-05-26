@@ -76,7 +76,7 @@ const Header = ({ username,isLoggedIn, onLogout }) => {
                 </li>
                 <li className="nav-item">
                     <NavLink
-                        to="/create_service"
+                        to='/create-new-miniservice'
                         className={({isActive}) =>
                             isActive ? "nav-link selected selected-link" : "nav-link"
                         }

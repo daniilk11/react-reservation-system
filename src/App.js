@@ -61,15 +61,15 @@ function App() {
             <Header isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />
             <Routes>
                 <Route path='/club-room' element={<ClubRoom isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />} />
-                <Route path='/study-room' element={<StudyRoom isLoggedIn={isLoggedIn} username={username} />} />
-                <Route path='/grill' element={<Grill isLoggedIn={isLoggedIn} username={username} />} />
+                <Route path='/study-room' element={<StudyRoom isLoggedIn={isLoggedIn} username={username}  onLogout={handleLogout}/>} />
+                <Route path='/grill' element={<Grill isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />} />
                 <Route
                     path='/login'
                     element={<RedirectToExternal url="https://rezervace.buk.cvut.cz:8000/auth_is/login" />}
                 />
                 <Route path='/logined' element={<Login onLogin={handleLogin}  />} />
                 <Route path='/logout' element={<Logout onLogout={handleLogout} />} />
-                <Route path='/' element={<ClubRoom isLoggedIn={isLoggedIn} username={username} />} />
+                <Route path='/' element={<ClubRoom isLoggedIn={isLoggedIn} username={username} onLogout={handleLogout} />} />
             </Routes>
         </div>
     );

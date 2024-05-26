@@ -29,7 +29,7 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
                 console.error("Error fetching data:", error);
                 seterrFetchingTypeOfReservations(true);
             });
-    }, []);
+    }, [selectedZone]);
 
     useEffect(() => {
         if (selectedType) {

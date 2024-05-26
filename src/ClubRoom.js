@@ -137,7 +137,7 @@ const ClubRoom = ({ isLoggedIn, username,onLogout }) => {
                 }
             })
             .catch(error => {
-                if (error.status === 401) {
+                if (error.response.status === 401) {
                     console.error('Error making reservation:', error);
                     setSuccessMessage('');
                     setErrorMessage(`401`);
@@ -154,7 +154,8 @@ const ClubRoom = ({ isLoggedIn, username,onLogout }) => {
         <div>
             {isLoggedIn ? (
                 errorMessage === '401' ?
-                (<Logout onLogout={onLogout}/>) : (
+                (<Logout onLogout={onLogout}/>) :
+                    (
                 <>
                     <ReservationForm formFields={formFields} username={username} onSubmit={handleSubmit} onTypeChange={handleTypeChange} />
                     {successMessage && <div className="alert alert-success">{successMessage}</div>}

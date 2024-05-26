@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import config from './Config';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import LoginInfo from "./LoginInfo";
 
 const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
     const [formFields, setFormFields] = useState([]);
@@ -350,10 +351,6 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
     return (
         <div>
             {isLoggedIn ? (
-                errorMessage === '401' ? (
-                    <Logout onLogout={onLogout} />
-                ) : (
-                    <>
                         <div className="container">
                             <h1
                                 className="my-4 text-center text-white"
@@ -373,12 +370,9 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                                 {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
                             </form>
                         </div>
-                    </>
-                )
             ) : (
                 <LoginInfo />
             )}
-            <GoogleCalendar src="roomCalendarLink" />
         </div>
     );
 };

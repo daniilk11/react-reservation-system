@@ -39,7 +39,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             axios.get(`${config.domenServer}/calendars/alias/${selectedType}`)
                 .then(response => {
                     const data = response.data;
-                    const newOptions = data.map((name, uuid) => ({ value: uuid, label: name }));
+                    const newOptions = data.map(name => ({ value: name, label: name }));
                     setCollisionWithCalendarOptions(newOptions);
                     setErrFetchingTypeOfReservations(false);
                 })
@@ -89,6 +89,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             {
                 name: 'collision_with_itself',
                 type: 'checkbox',
+                sybType: 'oneCheckbox',
                 labelText: 'Collision With Itself',
                 labelColor: 'text-success',
                 options: [{ value: 'true', label: 'True' }],
@@ -123,6 +124,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                     {
                         name: 'club_night_time',
                         type: 'checkbox',
+                        sybType: 'oneCheckbox',
                         labelText: 'Night Time',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
@@ -130,6 +132,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                     {
                         name: 'club_reservation_more_24_hours',
                         type: 'checkbox',
+                        sybType: 'oneCheckbox',
                         labelText: 'Reservation More Than 24 Hours',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
@@ -162,6 +165,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                     {
                         name: 'active_night_time',
                         type: 'checkbox',
+                        sybType: 'oneCheckbox',
                         labelText: 'Night Time',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
@@ -169,6 +173,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                     {
                         name: 'active_reservation_more_24_hours',
                         type: 'checkbox',
+                        sybType: 'oneCheckbox',
                         labelText: 'Reservation More Than 24 Hours',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
@@ -201,6 +206,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                     {
                         name: 'manager_night_time',
                         type: 'checkbox',
+                        sybType: 'oneCheckbox',
                         labelText: 'Night Time',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
@@ -208,6 +214,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                     {
                         name: 'manager_reservation_more_24_hours',
                         type: 'checkbox',
+                        sybType: 'oneCheckbox',
                         labelText: 'Reservation More Than 24 Hours',
                         labelColor: 'text-success',
                         options: [{ value: 'true', label: 'True' }],
@@ -235,7 +242,8 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         ]);
     }, [collisionWithCalendarOptions, additionalServices, errFetchingAdditionalServices, errFetchingTypeOfReservations]);
 
-    const handleChange = (e, field) => {
+
+    const handleoneCheckboxChange = (e, field) => {
         const { name, value, type, checked } = e.target;
 
         setFormData(prevData => {
@@ -259,6 +267,35 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                             [name]: currentValues.filter(item => item !== value),
                         };
                     }
+                }
+            } else {
+                return {
+                    ...prevData,
+                    [name]: value,
+                };
+            }
+        });
+
+        if (field.name === 'service_alias') {
+            setSelectedType(value);
+        }
+    };
+    const handleChange = (e, field) => {
+        const { name, value, type, checked } = e.target;
+
+        setFormData(prevData => {
+            if (type === 'checkbox') {
+                const currentValues = prevData[name] || [];
+                if (checked) {
+                    return {
+                        ...prevData,
+                        [name]: [...currentValues, value],
+                    };
+                } else {
+                    return {
+                        ...prevData,
+                        [name]: currentValues.filter(item => item !== value),
+                    };
                 }
             } else {
                 return {
@@ -319,7 +356,8 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                                             ? formData[field.name].includes(option.value)
                                             : formData[field.name] === option.value
                                     }
-                                    onChange={(e) => handleChange(e, field)}
+
+                                    onChange={(e) => field.sybType === 'oneCheckbox' ? (handleChange(e, field)) : ( handleoneCheckboxChange(e, field))}
                                 />
                                 <label
                                     className="form-check-label"

@@ -357,7 +357,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                                             : formData[field.name] === option.value
                                     }
 
-                                    onChange={(e) => field.sybType === 'oneCheckbox' ? (handleChange(e, field)) : ( handleoneCheckboxChange(e, field))}
+                                    onChange={(e) => field.sybType === 'oneCheckbox' ? ( handleoneCheckboxChange(e, field)) : (handleChange(e, field))}
                                 />
                                 <label
                                     className="form-check-label"

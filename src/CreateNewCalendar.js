@@ -239,12 +239,22 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         const { name, value, type, checked } = e.target;
 
         if (type === 'checkbox') {
-            setFormData(prevData => ({
-                ...prevData,
-                [name]: checked,
-            }));
+            if (Array.isArray(formData[name])) {
+                const newValue = checked
+                    ? [...formData[name], value]
+                    : formData[name].filter((v) => v !== value);
+                setFormData((prevData) => ({
+                    ...prevData,
+                    [name]: newValue,
+                }));
+            } else {
+                setFormData((prevData) => ({
+                    ...prevData,
+                    [name]: checked,
+                }));
+            }
         } else {
-            setFormData(prevData => ({
+            setFormData((prevData) => ({
                 ...prevData,
                 [name]: value,
             }));
@@ -257,28 +267,15 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post(`${config.domenServer}/calendars/create_calendar?username=${username}`, formData)
-            .then(response => {
-                if (response.status === 201) {
-                    console.log('Reservation successful', response);
-                    setSuccessMessage('Reservation created successfully!');
-                    setErrorMessage('');
-                } else {
-                    console.error('Error creating reservation', response);
-                    setSuccessMessage('');
-                    setErrorMessage(`Error creating reservation. ${response.data.message}`);
-                }
+        axios.post(`${config.domenServer}/calendars/create`, formData)
+            .then((response) => {
+                setSuccessMessage('Reservation created successfully!');
+                setErrorMessage('');
             })
-            .catch(error => {
-                if (error.response && error.response.status === 401) {
-                    console.error('Error making reservation:', error);
-                    setSuccessMessage('');
-                    setErrorMessage(`401`);
-                } else {
-                    console.error('Error making reservation:', error);
-                    setSuccessMessage('');
-                    setErrorMessage(`Error creating reservation, try again later.`);
-                }
+            .catch((error) => {
+                console.error('Error making reservation:', error);
+                setSuccessMessage('');
+                setErrorMessage('Error creating reservation, try again later.');
             });
     };
 
@@ -309,7 +306,11 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                                     name={field.name}
                                     value={option.value}
                                     id={`${field.name}-${option.value}`}
-                                    checked={formData[field.name] === true}
+                                    checked={
+                                        Array.isArray(formData[field.name])
+                                            ? formData[field.name].includes(option.value)
+                                            : formData[field.name] === option.value
+                                    }
                                     onChange={(e) => handleChange(e, field)}
                                 />
                                 <label

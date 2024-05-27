@@ -77,7 +77,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                 labelText: 'Collision With Calendar',
                 labelColor: 'text-success',
                 options: collisionWithCalendarOptions,
-                validation: (value) => value === 'true',
+                validation: (value) => value,
             },
             errFetchingAdditionalServices ? { type: "empty" } : {
                 name: 'mini_services',
@@ -92,7 +92,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                 labelText: 'Collision With Itself',
                 labelColor: 'text-success',
                 options: [{ value: 'true', label: 'True' }],
-                validation: (value) => value === 'true',
+                validation: (value) => value,
             },
             {
                 name: 'reservation_type',
@@ -237,16 +237,11 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
 
     const handleChange = (e, field) => {
         const { name, value, type, checked } = e.target;
-        let updatedValue = value;
 
-        if (field.type === 'checkbox') {
-            const newCheckboxValues = {
-                ...formData.collision_with_calendar,
-                [value]: checked,
-            };
+        if (type === 'checkbox') {
             setFormData(prevData => ({
                 ...prevData,
-                collision_with_calendar: newCheckboxValues,
+                [name]: checked,
             }));
         } else {
             setFormData(prevData => ({
@@ -259,7 +254,6 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             setSelectedType(value);
         }
     };
-
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -307,27 +301,25 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                         {field.labelText}
                     </label>
                     {field.type === 'checkbox' ? (
-                        <>
-                            {field.options.map((option) => (
-                                <div key={option.value} className="form-check">
-                                    <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        name={field.name}
-                                        value={option.value}
-                                        id={`${field.name}-${option.value}`}
-                                        checked={formData[field.name] === option.value}
-                                        onChange={(e) => handleChange(e, field)}
-                                    />
-                                    <label
-                                        className="form-check-label"
-                                        htmlFor={`${field.name}-${option.value}`}
-                                    >
-                                        {option.label}
-                                    </label>
-                                </div>
-                            ))}
-                        </>
+                        field.options.map((option) => (
+                            <div key={option.value} className="form-check">
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    name={field.name}
+                                    value={option.value}
+                                    id={`${field.name}-${option.value}`}
+                                    checked={formData[field.name] === true}
+                                    onChange={(e) => handleChange(e, field)}
+                                />
+                                <label
+                                    className="form-check-label"
+                                    htmlFor={`${field.name}-${option.value}`}
+                                >
+                                    {option.label}
+                                </label>
+                            </div>
+                        ))
                     ) : field.type === 'select' ? (
                         <select
                             className="form-control"
@@ -358,29 +350,28 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             );
         });
 
-
     return (
         <div>
             {isLoggedIn ? (
-                        <div className="container">
-                            <h1
-                                className="my-4 text-center text-white"
-                                style={{
-                                    background: 'linear-gradient(to right, #00b894, #008e7a)',
-                                    padding: '20px 0',
-                                }}
-                            >
-                                Create new Calendar
-                            </h1>
-                            <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
-                                {renderFormFields(formFields)}
-                                <button type="submit" className="btn btn-secondary">
-                                    Submit
-                                </button>
-                                {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
-                                {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
-                            </form>
-                        </div>
+                <div className="container">
+                    <h1
+                        className="my-4 text-center text-white"
+                        style={{
+                            background: 'linear-gradient(to right, #00b894, #008e7a)',
+                            padding: '20px 0',
+                        }}
+                    >
+                        Create new Calendar
+                    </h1>
+                    <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
+                        {renderFormFields(formFields)}
+                        <button type="submit" className="btn btn-secondary">
+                            Submit
+                        </button>
+                        {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
+                        {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+                    </form>
+                </div>
             ) : (
                 <LoginInfo />
             )}

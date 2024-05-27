@@ -267,7 +267,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post(`${config.domenServer}/calendars/create`, formData)
+        axios.post(`${config.domenServer}/calendars/create?username=${username}`, formData)
             .then((response) => {
                 setSuccessMessage('Reservation created successfully!');
                 setErrorMessage('');

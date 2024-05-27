@@ -17,6 +17,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
     const [errFetchingAdditionalServices, setErrFetchingAdditionalServices] = useState(true);
     const [errFetchingTypeOfReservations, setErrFetchingTypeOfReservations] = useState(true);
 
+    // Fetch additional services based on selected type
     useEffect(() => {
         if (selectedType) {
             axios.get(`${config.domenServer}/mini_services/alias/${selectedType}`)
@@ -34,6 +35,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         }
     }, [selectedType]);
 
+    // Fetch collision with calendar options based on selected type
     useEffect(() => {
         if (selectedType) {
             axios.get(`${config.domenServer}/calendars/alias/${selectedType}`)
@@ -50,6 +52,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         }
     }, [selectedType]);
 
+    // Set initial form fields
     useEffect(() => {
         setFormFields([
             {
@@ -235,6 +238,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         ]);
     }, [collisionWithCalendarOptions, additionalServices, errFetchingAdditionalServices, errFetchingTypeOfReservations]);
 
+    // Handle form changes, including multi-select checkboxes
     const handleChange = (e, field) => {
         const { name, value, type, checked } = e.target;
 
@@ -283,7 +287,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                 calendar_id: formData.calendar_id,
                 service_alias: formData.service_alias,
                 collision_with_calendar: formData.collision_with_calendar || [],
-                mini_services: formData.mini_services,
+                mini_services: formData.mini_services || [],
                 collision_with_itself: formData.collision_with_itself || [],
                 reservation_type: formData.reservation_type,
                 event_name: formData.event_name,
@@ -325,6 +329,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         }
     };
 
+    // Render form fields based on their type
     const renderFormFields = (fields) =>
         fields.map(field => {
             if (field.type === 'group') {

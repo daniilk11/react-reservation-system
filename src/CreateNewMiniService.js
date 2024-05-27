@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import config from "./Config";
+import Logout from "./Logout";
+import ReservationForm from "./ReservationForm";
+import LoginInfo from "./LoginInfo";
 
-const CreateNewMiniService = ({ username }) => {
+const CreateNewMiniService = ({ isLoggedIn ,username }) => {
     const [formData, setFormData] = useState({
         name: '',
         service_alias: 'klub', // Default value set to 'klub'
@@ -41,6 +44,8 @@ const CreateNewMiniService = ({ username }) => {
     };
 
     return (
+        <>
+        {isLoggedIn ? (
         <div className="container">
             <h1
                 className="my-4 text-center text-white"
@@ -82,7 +87,10 @@ const CreateNewMiniService = ({ username }) => {
             </form>
             {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
             {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
-        </div>
+        </div> ) : (
+        <LoginInfo />
+    )}
+        </>
     );
 };
 

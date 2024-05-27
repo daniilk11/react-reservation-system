@@ -91,7 +91,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                 type: 'checkbox',
                 labelText: 'Collision With Itself',
                 labelColor: 'text-success',
-                // options: [{ value: 'true', label: 'True' }],
+                options: [{ value: 'true', label: 'True' }],
                 validation: (value) => value,
             },
             {
@@ -125,14 +125,14 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                         type: 'checkbox',
                         labelText: 'Night Time',
                         labelColor: 'text-success',
-                        // options: [{ value: 'true', label: 'True' }],
+                        options: [{ value: 'true', label: 'True' }],
                     },
                     {
                         name: 'club_reservation_more_24_hours',
                         type: 'checkbox',
                         labelText: 'Reservation More Than 24 Hours',
                         labelColor: 'text-success',
-                        // options: [{ value: 'true', label: 'True' }],
+                        options: [{ value: 'true', label: 'True' }],
                     },
                     {
                         name: 'club_in_advance_hours',
@@ -240,17 +240,25 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
 
         setFormData(prevData => {
             if (type === 'checkbox') {
-                const currentValues = prevData[name] || [];
-                if (checked) {
+                if (field.options.length === 1) {
+                    // Handle single checkbox (true/false)
                     return {
                         ...prevData,
-                        [name]: [...currentValues, value],
+                        [name]: checked ? 'true' : 'false',
                     };
                 } else {
-                    return {
-                        ...prevData,
-                        [name]: currentValues.filter(item => item !== value),
-                    };
+                    const currentValues = prevData[name] || [];
+                    if (checked) {
+                        return {
+                            ...prevData,
+                            [name]: [...currentValues, value],
+                        };
+                    } else {
+                        return {
+                            ...prevData,
+                            [name]: currentValues.filter(item => item !== value),
+                        };
+                    }
                 }
             } else {
                 return {

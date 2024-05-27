@@ -158,12 +158,11 @@ const ReservationComponent = ({ isLoggedIn, username, onLogout, roomCalendarLink
             {isLoggedIn ? (
                 errorMessage === '401' ?
                     (<Logout onLogout={onLogout}/>) :
-                    (
-                        <>
-                            <ReservationForm formFields={formFields} username={username} onSubmit={handleSubmit} onTypeChange={handleTypeChange} />
-                            {successMessage && <div className="alert alert-success">{successMessage}</div>}
-                            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-                        </>)
+                    (<>
+                        <ReservationForm formFields={formFields} username={username} onSubmit={handleSubmit} onTypeChange={handleTypeChange} />
+                        {successMessage && <div className="alert alert-success">{successMessage}</div>}
+                        {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+                    </>)
             ) : (
                 <LoginInfo />
             )}

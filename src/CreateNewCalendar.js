@@ -238,27 +238,27 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
     const handleChange = (e, field) => {
         const { name, value, type, checked } = e.target;
 
-        if (type === 'checkbox') {
-            if (Array.isArray(formData[name])) {
-                const newValue = checked
-                    ? [...formData[name], value]
-                    : formData[name].filter((v) => v !== value);
-                setFormData((prevData) => ({
-                    ...prevData,
-                    [name]: newValue,
-                }));
+        setFormData(prevData => {
+            if (type === 'checkbox') {
+                const currentValues = prevData[name] || [];
+                if (checked) {
+                    return {
+                        ...prevData,
+                        [name]: [...currentValues, value],
+                    };
+                } else {
+                    return {
+                        ...prevData,
+                        [name]: currentValues.filter(item => item !== value),
+                    };
+                }
             } else {
-                setFormData((prevData) => ({
+                return {
                     ...prevData,
-                    [name]: checked,
-                }));
+                    [name]: value,
+                };
             }
-        } else {
-            setFormData((prevData) => ({
-                ...prevData,
-                [name]: value,
-            }));
-        }
+        });
 
         if (field.name === 'service_alias') {
             setSelectedType(value);

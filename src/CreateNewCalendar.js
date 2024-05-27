@@ -39,7 +39,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             axios.get(`${config.domenServer}/calendars/alias/${selectedType}`)
                 .then(response => {
                     const data = response.data;
-                    const newOptions = data.map(name => ({ value: name, label: name }));
+                    const newOptions = data.map((name, uuid) => ({ value: uuid, label: name }));
                     setCollisionWithCalendarOptions(newOptions);
                     setErrFetchingTypeOfReservations(false);
                 })
@@ -91,7 +91,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                 type: 'checkbox',
                 labelText: 'Collision With Itself',
                 labelColor: 'text-success',
-                options: [{ value: 'true', label: 'True' }],
+                // options: [{ value: 'true', label: 'True' }],
                 validation: (value) => value,
             },
             {
@@ -125,14 +125,14 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                         type: 'checkbox',
                         labelText: 'Night Time',
                         labelColor: 'text-success',
-                        options: [{ value: 'true', label: 'True' }],
+                        // options: [{ value: 'true', label: 'True' }],
                     },
                     {
                         name: 'club_reservation_more_24_hours',
                         type: 'checkbox',
                         labelText: 'Reservation More Than 24 Hours',
                         labelColor: 'text-success',
-                        options: [{ value: 'true', label: 'True' }],
+                        // options: [{ value: 'true', label: 'True' }],
                     },
                     {
                         name: 'club_in_advance_hours',

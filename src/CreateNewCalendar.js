@@ -39,7 +39,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             axios.get(`${config.domenServer}/calendars/alias/${selectedType}`)
                 .then(response => {
                     const data = response.data;
-                    const newOptions = data.map((name, uuid) => ({ value: uuid, label: name }));
+                    const newOptions = data.map((name, uuid) => ({ value: name, label: name }));
                     setCollisionWithCalendarOptions(newOptions);
                     setErrFetchingTypeOfReservations(false);
                 })
@@ -390,7 +390,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                                             : formData[field.name] === option.value
                                     }
 
-                                    onChange={(e) => field.sybType === 'oneCheckbox' ? ( handleoneCheckboxChange(e, field)) : (handleChange(e, field))}
+                                    onChange={(e) => handleChange(e, field)}
                                 />
                                 <label
                                     className="form-check-label"

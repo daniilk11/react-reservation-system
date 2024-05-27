@@ -81,7 +81,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             },
             errFetchingAdditionalServices ? { type: "empty" } : {
                 name: 'mini_services',
-                type: 'select',
+                type: 'checkbox',
                 labelText: 'Mini Services',
                 labelColor: 'text-success',
                 options: additionalServices,

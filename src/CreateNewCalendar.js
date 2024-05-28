@@ -323,7 +323,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             },
             manager_rules: {
                 night_time: !!(formData.manager_night_time && formData.manager_night_time.length > 0),
-                reservation_more_24_hours: !!(formData.manager_night_time && formData.manager_night_time.length > 0),
+                reservation_more_24_hours: !!(formData.manager_reservation_more_24_hours && formData.manager_reservation_more_24_hours.length > 0),
                 in_advance_hours: Number(formData.manager_in_advance_hours) || 0,
                 in_advance_minutes: Number(formData.manager_in_advance_minutes) || 0,
                 in_advance_day: Number(formData.manager_in_advance_day) || 0

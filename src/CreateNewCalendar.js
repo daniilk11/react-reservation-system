@@ -294,30 +294,35 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         e.preventDefault();
 
         const requestData = {
-            ...formData,
+            calendar_id: formData.calendar_id,
+            service_alias: formData.service_alias,
+            collision_with_calendar: formData.collision_with_calendar || [],
+            mini_services: formData.mini_services || [],
+            collision_with_itself: formData.collision_with_itself,
+            reservation_type: formData.reservation_type,
+            event_name: formData.event_name,
+            max_people: Number(formData.max_people) || 0,
             club_member_rules: {
-                night_time: (formData.club_night_time && formData.club_night_time.length > 0) ? formData.club_night_time[0] : false,
-                reservation_more_24_hours: (formData.club_reservation_more_24_hours && formData.club_reservation_more_24_hours.length > 0) ? formData.club_reservation_more_24_hours[0] : false,
+                night_time: !!(formData.club_night_time && formData.club_night_time.length > 0),
+                reservation_more_24_hours: !!(formData.club_night_time && formData.club_night_time.length > 0),
                 in_advance_hours: Number(formData.club_in_advance_hours) || 0,
                 in_advance_minutes: Number(formData.club_in_advance_minutes) || 0,
                 in_advance_day: Number(formData.club_in_advance_day) || 0
             },
             active_member_rules: {
-                night_time: (formData.active_night_time && formData.active_night_time.length > 0) ? formData.active_night_time[0] : false,
-                reservation_more_24_hours: (formData.active_reservation_more_24_hours && formData.active_reservation_more_24_hours.length > 0) ? formData.active_reservation_more_24_hours[0] : false,
+                night_time: !!(formData.club_night_time && formData.club_night_time.length > 0),
+                reservation_more_24_hours: !!(formData.club_night_time && formData.club_night_time.length > 0),
                 in_advance_hours: Number(formData.active_in_advance_hours) || 0,
                 in_advance_minutes: Number(formData.active_in_advance_minutes) || 0,
                 in_advance_day: Number(formData.active_in_advance_day) || 0
             },
             manager_rules: {
-                night_time: (formData.manager_night_time && formData.manager_night_time.length > 0) ? formData.manager_night_time[0] : false,
-                reservation_more_24_hours: (formData.manager_reservation_more_24_hours && formData.manager_reservation_more_24_hours.length > 0) ? formData.manager_reservation_more_24_hours[0] : false,
+                night_time: !!(formData.club_night_time && formData.club_night_time.length > 0),
+                reservation_more_24_hours: !!(formData.club_night_time && formData.club_night_time.length > 0),
                 in_advance_hours: Number(formData.manager_in_advance_hours) || 0,
                 in_advance_minutes: Number(formData.manager_in_advance_minutes) || 0,
                 in_advance_day: Number(formData.manager_in_advance_day) || 0
-            },
-            collision_with_calendar: formData.collision_with_calendar || [],
-            mini_services: formData.mini_services || []
+            }
         };
 
         axios.post(`${config.domenServer}/calendars/create_calendar?username=${username}`, requestData)

@@ -40,7 +40,8 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             axios.get(`${config.domenServer}/calendars/`)
                 .then(response => {
                     const data = response.data;
-                    const newOptions = data.map((calendar) => ({ value: calendar.uuid, label: calendar.name }));
+                    const newOptions = data.map((calendar) => ( calendar.service_alias === selectedType ?
+                        { value: calendar.calendar_id, label: calendar.event_name } : null));
                     setCollisionWithCalendarOptions(newOptions);
                     setErrFetchingTypeOfReservations(false);
                 })
@@ -243,43 +244,20 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         ]);
     }, [collisionWithCalendarOptions, additionalServices, errFetchingAdditionalServices, errFetchingTypeOfReservations]);
 
+    const handleCheckboxChange = (e) => {
+        const { name, checked } = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: checked,
+        }));
+    };
 
-    const handleoneCheckboxChange = (e, field) => {
-        const { name, value, type, checked } = e.target;
-
-        setFormData(prevData => {
-            if (type === 'checkbox') {
-                if (field.options.length === 1) {
-                    // Handle single checkbox (true/false)
-                    return {
-                        ...prevData,
-                        [name]: checked ? 'true' : 'false',
-                    };
-                } else {
-                    const currentValues = prevData[name] || [];
-                    if (checked) {
-                        return {
-                            ...prevData,
-                            [name]: [...currentValues, value],
-                        };
-                    } else {
-                        return {
-                            ...prevData,
-                            [name]: currentValues.filter(item => item !== value),
-                        };
-                    }
-                }
-            } else {
-                return {
-                    ...prevData,
-                    [name]: value,
-                };
-            }
-        });
-
-        if (field.name === 'service_alias') {
-            setSelectedType(value);
-        }
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value,
+        }));
     };
     const handleChange = (e, field) => {
         const { name, value, type, checked } = e.target;
@@ -315,46 +293,41 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         e.preventDefault();
 
         const requestData = {
-            collision_with_itself: formData.collision_with_itself === 'true',
-            collision_with_calendar: formData.collision_with_calendar || [],
+            ...formData,
             club_member_rules: {
-                night_time: formData.club_night_time === 'true',
-                reservation_more_24_hours: formData.club_reservation_more_24_hours === 'true',
+                night_time: !!formData.club_night_time,
+                reservation_more_24_hours: !!formData.club_reservation_more_24_hours,
                 in_advance_hours: Number(formData.club_in_advance_hours) || 0,
                 in_advance_minutes: Number(formData.club_in_advance_minutes) || 0,
                 in_advance_day: Number(formData.club_in_advance_day) || 0
             },
             active_member_rules: {
-                night_time: formData.active_night_time === 'true',
-                reservation_more_24_hours: formData.active_reservation_more_24_hours === 'true',
+                night_time: !!formData.active_night_time,
+                reservation_more_24_hours: !!formData.active_reservation_more_24_hours,
                 in_advance_hours: Number(formData.active_in_advance_hours) || 0,
                 in_advance_minutes: Number(formData.active_in_advance_minutes) || 0,
                 in_advance_day: Number(formData.active_in_advance_day) || 0
             },
             manager_rules: {
-                night_time: formData.manager_night_time === 'true',
-                reservation_more_24_hours: formData.manager_reservation_more_24_hours === 'true',
+                night_time: !!formData.manager_night_time,
+                reservation_more_24_hours: !!formData.manager_reservation_more_24_hours,
                 in_advance_hours: Number(formData.manager_in_advance_hours) || 0,
                 in_advance_minutes: Number(formData.manager_in_advance_minutes) || 0,
                 in_advance_day: Number(formData.manager_in_advance_day) || 0
             },
-            mini_services: formData.mini_services || [],
-            calendar_id: formData.calendar_id || '',
-            service_alias: formData.service_alias || '',
-            reservation_type: formData.reservation_type || '',
-            event_name: formData.event_name || '',
-            max_people: Number(formData.max_people) || 0
+            collision_with_calendar: formData.collision_with_calendar || [],
+            mini_services: formData.mini_services || []
         };
 
         axios.post(`${config.domenServer}/calendars/create_calendar?username=${username}`, requestData)
             .then((response) => {
-                setSuccessMessage('Reservation created successfully!');
+                setSuccessMessage('Calendar created successfully!');
                 setErrorMessage('');
             })
             .catch((error) => {
                 console.error('Error making reservation:', error);
                 setSuccessMessage('');
-                setErrorMessage('Error creating reservation, try again later.');
+                setErrorMessage('Error creating calendar.');
             });
     };
 
@@ -432,30 +405,142 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         });
 
     return (
-        <div>
-            {isLoggedIn ? (
-                <div className="container">
-                    <h1
-                        className="my-4 text-center text-white"
-                        style={{
-                            background: 'linear-gradient(to right, #00b894, #008e7a)',
-                            padding: '20px 0',
-                        }}
-                    >
-                        Create new Calendar
-                    </h1>
-                    <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
-                        {renderFormFields(formFields)}
-                        <button type="submit" className="btn btn-secondary">
-                            Submit
-                        </button>
-                        {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
-                        {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
-                    </form>
-                </div>
-            ) : (
-                <LoginInfo />
-            )}
+        <div className="container mt-5">
+            <LoginInfo isLoggedIn={isLoggedIn} onLogout={onLogout} username={username} />
+            <h2>Create New Calendar</h2>
+            <form onSubmit={handleSubmit}>
+                {formFields.map((field, index) => (
+                    field.type === 'group' ? (
+                        <div key={index}>
+                            <label className={`form-label ${field.labelColor}`}>{field.labelText}</label>
+                            <div className="form-group">
+                                {field.fields.map((subField, subIndex) => (
+                                    subField.type === 'checkbox' ? (
+                                        subField.sybType === 'oneCheckbox' ? (
+                                            <div className="form-check" key={subIndex}>
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    name={subField.name}
+                                                    checked={!!formData[subField.name]}
+                                                    onChange={handleCheckboxChange}
+                                                />
+                                                <label className="form-check-label">{subField.labelText}</label>
+                                            </div>
+                                        ) : (
+                                            subField.options.map(option => (
+                                                <div className="form-check" key={option.value}>
+                                                    <input
+                                                        className="form-check-input"
+                                                        type="checkbox"
+                                                        name={subField.name}
+                                                        value={option.value}
+                                                        checked={formData[subField.name]?.includes(option.value) || false}
+                                                        onChange={(e) => {
+                                                            const { name, value } = e.target;
+                                                            setFormData(prevData => {
+                                                                const currentValues = prevData[name] || [];
+                                                                if (e.target.checked) {
+                                                                    return {
+                                                                        ...prevData,
+                                                                        [name]: [...currentValues, value],
+                                                                    };
+                                                                } else {
+                                                                    return {
+                                                                        ...prevData,
+                                                                        [name]: currentValues.filter(v => v !== value),
+                                                                    };
+                                                                }
+                                                            });
+                                                        }}
+                                                    />
+                                                    <label className="form-check-label">{option.label}</label>
+                                                </div>
+                                            ))
+                                        )
+                                    ) : (
+                                        <div className="mb-3" key={subIndex}>
+                                            <label className={`form-label ${subField.labelColor}`}>{subField.labelText}</label>
+                                            <input
+                                                className="form-control"
+                                                type={subField.type}
+                                                name={subField.name}
+                                                value={formData[subField.name] || ''}
+                                                onChange={handleInputChange}
+                                            />
+                                        </div>
+                                    )
+                                ))}
+                            </div>
+                        </div>
+                    ) : field.type === 'checkbox' ? (
+                        <div key={index}>
+                            <label className={`form-label ${field.labelColor}`}>{field.labelText}</label>
+                            {field.options.map(option => (
+                                <div className="form-check" key={option.value}>
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        name={field.name}
+                                        value={option.value}
+                                        checked={formData[field.name]?.includes(option.value) || false}
+                                        onChange={(e) => {
+                                            const { name, value } = e.target;
+                                            setFormData(prevData => {
+                                                const currentValues = prevData[name] || [];
+                                                if (e.target.checked) {
+                                                    return {
+                                                        ...prevData,
+                                                        [name]: [...currentValues, value],
+                                                    };
+                                                } else {
+                                                    return {
+                                                        ...prevData,
+                                                        [name]: currentValues.filter(v => v !== value),
+                                                    };
+                                                }
+                                            });
+                                        }}
+                                    />
+                                    <label className="form-check-label">{option.label}</label>
+                                </div>
+                            ))}
+                        </div>
+                    ) : field.type === 'select' ? (
+                        <div className="mb-3" key={index}>
+                            <label className={`form-label ${field.labelColor}`}>{field.labelText}</label>
+                            <select
+                                className="form-select"
+                                name={field.name}
+                                value={formData[field.name] || ''}
+                                onChange={(e) => {
+                                    setFormData({ ...formData, [field.name]: e.target.value });
+                                    setSelectedType(e.target.value);
+                                }}
+                            >
+                                <option value="">Select an option</option>
+                                {field.options.map(option => (
+                                    <option key={option.value} value={option.value}>{option.label}</option>
+                                ))}
+                            </select>
+                        </div>
+                    ) : (
+                        <div className="mb-3" key={index}>
+                            <label className={`form-label ${field.labelColor}`}>{field.labelText}</label>
+                            <input
+                                className="form-control"
+                                type={field.type}
+                                name={field.name}
+                                value={formData[field.name] || ''}
+                                onChange={handleInputChange}
+                            />
+                        </div>
+                    )
+                ))}
+                <button type="submit" className="btn btn-primary">Submit</button>
+            </form>
+            {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
+            {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
         </div>
     );
 };

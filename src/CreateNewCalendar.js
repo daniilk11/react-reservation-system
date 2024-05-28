@@ -405,142 +405,30 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         });
 
     return (
-        <div className="container mt-5">
-            <LoginInfo isLoggedIn={isLoggedIn} onLogout={onLogout} username={username} />
-            <h2>Create New Calendar</h2>
-            <form onSubmit={handleSubmit}>
-                {formFields.map((field, index) => (
-                    field.type === 'group' ? (
-                        <div key={index}>
-                            <label className={`form-label ${field.labelColor}`}>{field.labelText}</label>
-                            <div className="form-group">
-                                {field.fields.map((subField, subIndex) => (
-                                    subField.type === 'checkbox' ? (
-                                        subField.sybType === 'oneCheckbox' ? (
-                                            <div className="form-check" key={subIndex}>
-                                                <input
-                                                    className="form-check-input"
-                                                    type="checkbox"
-                                                    name={subField.name}
-                                                    checked={!!formData[subField.name]}
-                                                    onChange={handleCheckboxChange}
-                                                />
-                                                <label className="form-check-label">{subField.labelText}</label>
-                                            </div>
-                                        ) : (
-                                            subField.options.map(option => (
-                                                <div className="form-check" key={option.value}>
-                                                    <input
-                                                        className="form-check-input"
-                                                        type="checkbox"
-                                                        name={subField.name}
-                                                        value={option.value}
-                                                        checked={formData[subField.name]?.includes(option.value) || false}
-                                                        onChange={(e) => {
-                                                            const { name, value } = e.target;
-                                                            setFormData(prevData => {
-                                                                const currentValues = prevData[name] || [];
-                                                                if (e.target.checked) {
-                                                                    return {
-                                                                        ...prevData,
-                                                                        [name]: [...currentValues, value],
-                                                                    };
-                                                                } else {
-                                                                    return {
-                                                                        ...prevData,
-                                                                        [name]: currentValues.filter(v => v !== value),
-                                                                    };
-                                                                }
-                                                            });
-                                                        }}
-                                                    />
-                                                    <label className="form-check-label">{option.label}</label>
-                                                </div>
-                                            ))
-                                        )
-                                    ) : (
-                                        <div className="mb-3" key={subIndex}>
-                                            <label className={`form-label ${subField.labelColor}`}>{subField.labelText}</label>
-                                            <input
-                                                className="form-control"
-                                                type={subField.type}
-                                                name={subField.name}
-                                                value={formData[subField.name] || ''}
-                                                onChange={handleInputChange}
-                                            />
-                                        </div>
-                                    )
-                                ))}
-                            </div>
-                        </div>
-                    ) : field.type === 'checkbox' ? (
-                        <div key={index}>
-                            <label className={`form-label ${field.labelColor}`}>{field.labelText}</label>
-                            {field.options.map(option => (
-                                <div className="form-check" key={option.value}>
-                                    <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        name={field.name}
-                                        value={option.value}
-                                        checked={formData[field.name]?.includes(option.value) || false}
-                                        onChange={(e) => {
-                                            const { name, value } = e.target;
-                                            setFormData(prevData => {
-                                                const currentValues = prevData[name] || [];
-                                                if (e.target.checked) {
-                                                    return {
-                                                        ...prevData,
-                                                        [name]: [...currentValues, value],
-                                                    };
-                                                } else {
-                                                    return {
-                                                        ...prevData,
-                                                        [name]: currentValues.filter(v => v !== value),
-                                                    };
-                                                }
-                                            });
-                                        }}
-                                    />
-                                    <label className="form-check-label">{option.label}</label>
-                                </div>
-                            ))}
-                        </div>
-                    ) : field.type === 'select' ? (
-                        <div className="mb-3" key={index}>
-                            <label className={`form-label ${field.labelColor}`}>{field.labelText}</label>
-                            <select
-                                className="form-select"
-                                name={field.name}
-                                value={formData[field.name] || ''}
-                                onChange={(e) => {
-                                    setFormData({ ...formData, [field.name]: e.target.value });
-                                    setSelectedType(e.target.value);
-                                }}
-                            >
-                                <option value="">Select an option</option>
-                                {field.options.map(option => (
-                                    <option key={option.value} value={option.value}>{option.label}</option>
-                                ))}
-                            </select>
-                        </div>
-                    ) : (
-                        <div className="mb-3" key={index}>
-                            <label className={`form-label ${field.labelColor}`}>{field.labelText}</label>
-                            <input
-                                className="form-control"
-                                type={field.type}
-                                name={field.name}
-                                value={formData[field.name] || ''}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                    )
-                ))}
-                <button type="submit" className="btn btn-primary">Submit</button>
-            </form>
-            {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
-            {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+        <div>
+            {isLoggedIn ? (
+                <div className="container">
+                    <h1
+                        className="my-4 text-center text-white"
+                        style={{
+                            background: 'linear-gradient(to right, #00b894, #008e7a)',
+                            padding: '20px 0',
+                        }}
+                    >
+                        Create new Calendar
+                    </h1>
+                    <form onSubmit={handleSubmit} className="bg-light p-4 rounded">
+                        {renderFormFields(formFields)}
+                        <button type="submit" className="btn btn-secondary">
+                            Submit
+                        </button>
+                        {successMessage && <div className="alert alert-success mt-3">{successMessage}</div>}
+                        {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+                    </form>
+                </div>
+            ) : (
+                <LoginInfo />
+            )}
         </div>
     );
 };

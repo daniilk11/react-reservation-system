@@ -36,10 +36,11 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
 
     useEffect(() => {
         if (selectedType) {
-            axios.get(`${config.domenServer}/calendars/alias/${selectedType}`)
+            // axios.get(`${config.domenServer}/calendars/alias/${selectedType}`)
+            axios.get(`${config.domenServer}/calendars/`)
                 .then(response => {
                     const data = response.data;
-                    const newOptions = data.map((name, uuid) => ({ value: name, label: name }));
+                    const newOptions = data.map((calendar) => ({ value: calendar.uuid, label: calendar.name }));
                     setCollisionWithCalendarOptions(newOptions);
                     setErrFetchingTypeOfReservations(false);
                 })

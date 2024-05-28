@@ -93,3 +93,4 @@ const CreateNewMiniService = ({isLoggedIn, username}) => {
         </>
     );
 }
+export default CreateNewMiniService;

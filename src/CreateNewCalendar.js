@@ -303,7 +303,7 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             service_alias: formData.service_alias,
             collision_with_calendar: formData.collision_with_calendar || [],
             mini_services: formData.mini_services || [],
-            collision_with_itself: formData.collision_with_itself,
+            collision_with_itself: !!(formData.collision_with_itself && formData.collision_with_itself.length > 0),
             reservation_type: formData.reservation_type,
             event_name: formData.event_name,
             max_people: Number(formData.max_people) || 0,

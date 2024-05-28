@@ -309,21 +309,21 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             max_people: Number(formData.max_people) || 0,
             club_member_rules: {
                 night_time: !!(formData.club_night_time && formData.club_night_time.length > 0),
-                reservation_more_24_hours: !!(formData.club_night_time && formData.club_night_time.length > 0),
+                reservation_more_24_hours: !!(formData.club_reservation_more_24_hours  && formData.club_reservation_more_24_hours.length > 0),
                 in_advance_hours: Number(formData.club_in_advance_hours) || 0,
                 in_advance_minutes: Number(formData.club_in_advance_minutes) || 0,
                 in_advance_day: Number(formData.club_in_advance_day) || 0
             },
             active_member_rules: {
-                night_time: !!(formData.club_night_time && formData.club_night_time.length > 0),
-                reservation_more_24_hours: !!(formData.club_night_time && formData.club_night_time.length > 0),
+                night_time: !!(formData.active_night_time && formData.active_night_time.length > 0),
+                reservation_more_24_hours: !!(formData.active_reservation_more_24_hours && formData.active_reservation_more_24_hours.length > 0),
                 in_advance_hours: Number(formData.active_in_advance_hours) || 0,
                 in_advance_minutes: Number(formData.active_in_advance_minutes) || 0,
                 in_advance_day: Number(formData.active_in_advance_day) || 0
             },
             manager_rules: {
-                night_time: !!(formData.club_night_time && formData.club_night_time.length > 0),
-                reservation_more_24_hours: !!(formData.club_night_time && formData.club_night_time.length > 0),
+                night_time: !!(formData.manager_night_time && formData.manager_night_time.length > 0),
+                reservation_more_24_hours: !!(formData.manager_night_time && formData.manager_night_time.length > 0),
                 in_advance_hours: Number(formData.manager_in_advance_hours) || 0,
                 in_advance_minutes: Number(formData.manager_in_advance_minutes) || 0,
                 in_advance_day: Number(formData.manager_in_advance_day) || 0

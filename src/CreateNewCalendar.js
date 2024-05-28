@@ -40,8 +40,9 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
             axios.get(`${config.domenServer}/calendars/`)
                 .then(response => {
                     const data = response.data;
-                    const newOptions = data.map((calendar) => ( calendar.service_alias === selectedType ?
-                        { value: calendar.calendar_id, label: calendar.event_name } : null));
+                    const newOptions = data
+                        .filter(calendar => calendar.service_alias === selectedType) // Filter out the elements that don't meet the condition
+                        .map(calendar => ({ value: calendar.calendar_id, label: calendar.event_name })); // Map the filtered elements to the desired format
                     setCollisionWithCalendarOptions(newOptions);
                     setErrFetchingTypeOfReservations(false);
                 })

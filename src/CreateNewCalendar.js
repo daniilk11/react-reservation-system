@@ -31,6 +31,11 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
                     setAdditionalServices([]);
                     setErrFetchingAdditionalServices(true);
                 });
+            setFormData(prevData => ({
+                ...prevData,
+                collision_with_calendar: [],
+                mini_services: []
+            }));
         }
     }, [selectedType]);
 

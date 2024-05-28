@@ -250,21 +250,21 @@ const CreateNewCalendar = ({ isLoggedIn, onLogout, username }) => {
         ]);
     }, [collisionWithCalendarOptions, additionalServices, errFetchingAdditionalServices, errFetchingTypeOfReservations]);
 
-    const handleCheckboxChange = (e) => {
-        const { name, checked } = e.target;
-        setFormData(prevData => ({
-            ...prevData,
-            [name]: checked,
-        }));
-    };
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevData => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
+    // const handleCheckboxChange = (e) => { todo delete
+    //     const { name, checked } = e.target;
+    //     setFormData(prevData => ({
+    //         ...prevData,
+    //         [name]: checked,
+    //     }));
+    // };
+    //
+    // const handleInputChange = (e) => {
+    //     const { name, value } = e.target;
+    //     setFormData(prevData => ({
+    //         ...prevData,
+    //         [name]: value,
+    //     }));
+    // };
     const handleChange = (e, field) => {
         const { name, value, type, checked } = e.target;
 
